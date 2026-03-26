@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOXER PRO | Neural Studio 2026</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/wavesurfer.js@7"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        
+        :root { --primary: #000; --secondary: #64748b; --bg: #f8fafc; --border: #e2e8f0; }
+        body { background: var(--bg); font-family: 'Plus Jakarta Sans', sans-serif; color: var(--primary); margin: 0; padding-bottom: 50px; }
+
+        /* Navbar */
+        .navbar { background: #fff; border-bottom: 1px solid var(--border); padding: 15px 5%; position: sticky; top: 0; z-index: 1000; }
+        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: -1px; text-decoration: none; color: #000; }
+
+        /* Stats Section - Fixed Undefined */
+        .stat-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 15px; text-align:center; min-height: 90px; }
+        .stat-lab { font-size: 0.65rem; font-weight: 800; color: var(--secondary); text-transform: uppercase; margin-bottom: 5px; }
+        .stat-val { font-size: 1.4rem; font-weight: 800; color: #000; }
+
+        /* Voice Selection Grid */
+        .voice-container { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+            margin-bottom: 25px; 
+        }
+        .voice-pill { 
+            background: #fff; border: 1px solid var(--border); padding: 15px; 
+            border-radius: 14px; cursor: pointer; font-weight: 700; font-size: 0.95rem; 
+            transition: 0.2s; text-align: center; color: var(--secondary);
+        }
+        .voice-pill:hover { border-color: #000; color: #000; }
+        .voice-pill.active { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+
+        /* Studio Input */
+        .studio-card { background: #fff; border-radius: 24px; border: 1px solid var(--border); padding: 30px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.04); position: relative; }
+        .studio-textarea { width: 100%; border: none; font-size: 1.3rem; min-height: 200px; outline: none; resize: none; font-weight: 500; background: transparent; }
+
+        /* Emotion Badge */
+        #emotionBadge { position: absolute; top: 20px; right: 30px; font-size: 0.7rem; font-weight: 800; padding: 4px 10px; border-radius: 20px; background: #f1f5f9; color: var(--secondary); display: none; }
+
+        /* Generation Button */
+        .gen-wrapper { position: relative; width: 100%; height: 65px; border: 2px solid var(--primary); border-radius: 14px; overflow: hidden; cursor: pointer; margin-top: 20px; }
+        .fill-progress { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: var(--primary); transition: width 0.1s linear; }
+        .btn-label { position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; z-index: 5; transition: 0.3s; color: var(--primary); letter-spacing: 0.5px; }
+        .loading .btn-label { color: #fff; mix-blend-mode: difference; }
+
+        /* Popup Gender Nav */
+        .gender-nav { display: flex; justify-content: center; gap: 8px; margin-bottom: 18px; background: #f1f5f9; padding: 6px; border-radius: 12px; }
+        .gender-btn { flex: 1; border: none; background: transparent; padding: 10px; border-radius: 9px; font-weight: 700; font-size: 0.85rem; transition: 0.2s; color: var(--secondary); display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .gender-btn.active { background: #fff; color: #000; box-shadow: 0 2px 5px rgba(0,0,0,0.06); }
+
+        /* Sample Row */
+        .wf-row { background: #f8fafc; border: 1px solid var(--border); border-radius: 14px; padding: 15px; margin-bottom: 12px; }
+        .play-trigger { background: var(--primary); color: #fff; border: none; border-radius: 10px; width: 38px; height: 38px; flex-shrink: 0; }
+        
+        /* Activity Feed */
+        .feed-box { background: #fff; border: 1px solid var(--border); border-radius: 20px; height: 320px; overflow: hidden; }
+        .feed-item { display: flex; align-items: center; gap: 12px; padding: 15px 20px; border-bottom: 1px solid #f1f5f9; animation: flashIn 0.4s ease-out; }
+        .user-av { width: 42px; height: 42px; border-radius: 12px; background: #eee; }
+
+        @keyframes flashIn { 0% { opacity: 0; transform: translateY(-8px); } 100% { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<nav class="navbar mb-4">
+    <div class="container-fluid px-md-5">
+        <a href="#" class="logo">VOXER <span style="font-weight:400; color:var(--secondary);">PRO</span></a>
+        <div class="badge bg-dark rounded-pill px-3 py-2 small">CRYSTAL CLEAR ENGINE</div>
+    </div>
+</nav>
+
+<div class="container" style="max-width: 800px;">
+    <div class="row g-3 mb-4">
+        <div class="col-4"><div class="stat-card"><div class="stat-lab">Online Users</div><div class="stat-val" id="s-active">842</div></div></div>
+        <div class="col-4"><div class="stat-card"><div class="stat-lab">Neural Cycles</div><div class="stat-val" id="s-total">64K+</div></div></div>
+        <div class="col-4"><div class="stat-card"><div class="stat-lab">Server Load</div><div class="stat-val" id="s-load">4%</div></div></div>
+    </div>
+
+    <h6 class="fw-bold small text-muted mb-3">LANGUAGE MODEL</h6>
+    <div class="voice-container">
+        <div class="voice-pill active" onclick="setLang(this)">🇺🇸 English Neural</div>
+        <div class="voice-pill" onclick="setLang(this)">🇮🇳 Hindi / Urdu</div>
+    </div>
+
+    <div class="studio-card mb-5">
+        <div id="emotionBadge">DETECTING TONE...</div>
+        <textarea id="scriptInput" class="studio-textarea" placeholder="Type your script here... (Try adding words like 'Happy', 'Sad' or 'Scared' for auto-emotion)"></textarea>
+        <div class="gen-wrapper" id="mainBtn" onclick="generateAudio()">
+            <div class="fill-progress" id="progressBar"></div>
+            <div class="btn-label" id="btnLabel">GENERATE 100% CLEAR VOICE</div>
+        </div>
+    </div>
+
+    <h6 class="fw-bold text-muted mb-3" style="font-size:0.75rem; letter-spacing:0.5px;">LIVE PRODUCTION FEED</h6>
+    <div class="feed-box" id="feedList"></div>
+</div>
+
+<script>
+    let globalMale = [];
+    let globalFemale = [];
+    let waves = [];
+
+    // Simple Emotion Visual Feedback
+    document.getElementById('scriptInput').oninput = function() {
+        const val = this.value.toLowerCase();
+        const badge = document.getElementById('emotionBadge');
+        if(val.length < 5) { badge.style.display = 'none'; return; }
+        
+        badge.style.display = 'block';
+        if(val.includes('happy') || val.includes('khush') || val.includes('great')) {
+            badge.innerText = '😊 HAPPY TONE DETECTED'; badge.style.color = '#10b981';
+        } else if(val.includes('sad') || val.includes('dukh') || val.includes('rona')) {
+            badge.innerText = '😔 SAD TONE DETECTED'; badge.style.color = '#3b82f6';
+        } else if(val.includes('darr') || val.includes('scared') || val.includes('khauf')) {
+            badge.innerText = '😨 SCARED TONE DETECTED'; badge.style.color = '#ef4444';
+        } else {
+            badge.innerText = '🎙️ NATURAL TONE'; badge.style.color = '#64748b';
+        }
+    };
+
+    function setLang(el) {
+        document.querySelectorAll('.voice-pill').forEach(v => v.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    // Stats Fetching (With Fallback to prevent Undefined)
+    async function fetchStats() {
+        try {
+            const res = await fetch('/live-stats');
+            const data = await res.json();
+            document.getElementById('s-active').innerText = data.active_users || '842';
+            document.getElementById('s-total').innerText = data.total_generated || '64K+';
+            document.getElementById('s-load').innerText = data.server_load || '4%';
+        } catch(e) {
+            console.log("Using default stats");
+        }
+    }
+    fetchStats(); 
+    setInterval(fetchStats, 5000);
+
+    // Generation Logic
+    async function generateAudio() {
+        const text = document.getElementById('scriptInput').value.trim();
+        const langRaw = document.querySelector('.voice-pill.active').innerText;
+        const lang = langRaw.includes('Hindi') ? 'Hindi' : 'English';
+        
+        const bar = document.getElementById('progressBar');
+        const btn = document.getElementById('mainBtn');
+        const label = document.getElementById('btnLabel');
+
+        if(!text) return Swal.fire({ icon: 'error', title: 'Empty Script', text: 'Please write something first.', confirmButtonColor: '#000' });
+
+        btn.classList.add('loading');
+        btn.style.pointerEvents = 'none';
+        
+        let p = 0;
+        const timer = setInterval(() => {
+            if(p < 95) { 
+                p += Math.random() * 15; 
+                if(p > 95) p = 95;
+                bar.style.width = p + '%'; 
+                label.innerText = 'CLEANING & GENERATING ' + Math.round(p) + '%'; 
+            }
+        }, 120);
+
+        try {
+            const res = await fetch('/generate', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({text: text, voice_group: lang})
+            });
+            const data = await res.json();
+            
+            clearInterval(timer);
+            bar.style.width = '100%'; 
+            label.innerText = 'SUCCESSFUL';
+
+            globalMale = data.male_samples;
+            globalFemale = data.female_samples;
+
+            setTimeout(() => {
+                renderPopup('male'); 
+                resetUI();
+            }, 300);
+        } catch(e) { 
+            clearInterval(timer); 
+            resetUI();
+            Swal.fire('Error', 'Neural Engine connection failed.', 'error');
+        }
+    }
+
+    function renderPopup(gender) {
+        const samples = (gender === 'male') ? globalMale : globalFemale;
+        let html = `
+        <div class="gender-nav">
+            <button class="gender-btn ${gender==='male'?'active':''}" onclick="renderPopup('male')"><i class="fa-solid fa-mars"></i> Male</button>
+            <button class="gender-btn ${gender==='female'?'active':''}" onclick="renderPopup('female')"><i class="fa-solid fa-venus"></i> Female</button>
+        </div>
+        <div id="popup-content" style="max-height: 400px; overflow-y: auto; padding-right:5px;">`;
+        
+        samples.forEach((s, idx) => {
+            html += `
+            <div class="wf-row">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="text-start">
+                        <div class="fw-bold" style="font-size:0.9rem;">${s.style}</div>
+                        <div class="text-muted" style="font-size:0.7rem;">Neural Crystal HD</div>
+                    </div>
+                    <a href="${s.url}" download class="btn btn-dark btn-sm rounded-circle shadow-sm"><i class="fa-solid fa-download"></i></a>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <button class="play-trigger" onclick="togglePlay(${idx})"><i class="fa-solid fa-play" id="icon-${idx}"></i></button>
+                    <div id="wf-${idx}" style="flex:1; height:45px;"></div>
+                    <audio id="aud-${idx}" src="${s.url}" style="display:none;"></audio>
+                </div>
+            </div>`;
+        });
+        html += `</div>`;
+
+        Swal.fire({
+            title: '<span style="font-weight:800;">Neural Samples</span>',
+            html: html,
+            showConfirmButton: false,
+            width: '480px',
+            customClass: { popup: 'rounded-4 shadow-lg' },
+            didOpen: () => { initWaves(samples); }
+        });
+    }
+
+    function resetUI() {
+        document.getElementById('mainBtn').classList.remove('loading');
+        document.getElementById('mainBtn').style.pointerEvents = 'auto';
+        document.getElementById('progressBar').style.width = '0%';
+        document.getElementById('btnLabel').innerText = 'GENERATE 100% CLEAR VOICE';
+    }
+
+    function initWaves(samples) {
+        if(waves.length > 0) waves.forEach(w => { try { w.destroy(); } catch(e){} });
+        waves = [];
+        
+        samples.forEach((s, i) => {
+            const container = document.getElementById(`wf-${i}`);
+            if(!container) return;
+
+            const ws = WaveSurfer.create({ 
+                container: container, 
+                waveColor: '#d1d5db', 
+                progressColor: '#000', 
+                height: 45, 
+                barWidth: 2, 
+                barGap: 3, 
+                barRadius: 4
+            });
+            ws.load(s.url);
+            waves[i] = ws;
+
+            const aud = document.getElementById(`aud-${i}`);
+            const icon = document.getElementById(`icon-${i}`);
+
+            aud.onplay = () => { icon.className="fa-solid fa-pause"; waves[i].play(); }
+            aud.onpause = () => { icon.className="fa-solid fa-play"; waves[i].pause(); }
+            ws.on('finish', () => { icon.className="fa-solid fa-play"; });
+        });
+    }
+
+    function togglePlay(i) {
+        const aud = document.getElementById(`aud-${i}`);
+        aud.paused ? aud.play() : aud.pause();
+    }
+
+    // Live Feed Simulation
+    const unames = ["Arsalan", "Zain M.", "Sarah", "Rahul", "Mehak", "Ali", "Hamza", "Danish"];
+    function addFeed() {
+        const list = document.getElementById('feedList');
+        const user = unames[Math.floor(Math.random()*unames.length)];
+        const item = document.createElement('div');
+        item.className = 'feed-item';
+        item.innerHTML = `
+            <img src="https://i.pravatar.cc/100?u=${Math.random()}" class="user-av">
+            <div style="flex:1">
+                <div class="fw-bold small">${user}</div>
+                <div class="text-muted" style="font-size:0.75rem;">Generated Clean Audio</div>
+            </div>
+            <div class="small fw-bold text-success" style="font-size:0.65rem;">JUST NOW</div>
+        `;
+        list.prepend(item);
+        if(list.children.length > 6) list.removeChild(list.lastChild);
+    }
+    setInterval(addFeed, 4500);
+    window.onload = () => { for(let i=0; i<4; i++) setTimeout(addFeed, i*300); };
+</script>
+</body>
+</html>
