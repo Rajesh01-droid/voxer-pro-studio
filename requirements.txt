@@ -2,4 +2,3 @@ fastapi
 uvicorn
 edge-tts
 pydantic
-mangum
