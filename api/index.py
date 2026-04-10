@@ -8,18 +8,11 @@ import asyncio
 from pydantic import BaseModel
 
 app = FastAPI()
-
-# Enable CORS for all requests
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"]
-)
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 AUDIO_DIR = "/tmp"
 
-# High-End Neural Models for Studio Quality
+# Ultra-Clear Desi Models
 VOICE_MODELS = {
     "English": {"m": "en-US-AndrewNeural", "f": "en-US-AvaNeural"},
     "Hindi": {"m": "hi-IN-MadhuramNeural", "f": "hi-IN-SwaraNeural"}
@@ -33,40 +26,29 @@ class VoiceRequest(BaseModel):
 @app.post("/api/generate")
 async def generate_voice(request: VoiceRequest):
     try:
-        if not request.text.strip():
-            return {"error": "Script is empty"}
+        if not request.text.strip(): return {"error": "Empty"}
         
-        # Explicit Language Selection
         lang = "Hindi" if "Hindi" in request.voice_group else "English"
-        gender = "m" if request.gender == "m" else "f"
+        selected_voice = VOICE_MODELS[lang][request.gender]
         
-        selected_voice = VOICE_MODELS[lang][gender]
-        
-        # Audio Tuning for Crystal Clarity
-        # Male voice ko heavy aur clear karne ke liye -2Hz pitch aur slow rate use kiya hai
-        rate = "-4%" if gender == "m" else "+0%"
-        pitch = "-2Hz" if gender == "m" else "+0Hz"
+        # PRONUNCIATION TUNING:
+        # Roman Urdu ke liye rate thora slow (-8%) aur volume boost zaroori hai
+        rate = "-8%" if lang == "Hindi" else "+0%"
+        # Male voice ke liye thori base (-3Hz)
+        pitch = "-3Hz" if request.gender == "m" and lang == "Hindi" else "+0Hz"
         
         base_id = uuid.uuid4().hex[:10]
         filename = f"{base_id}.mp3"
         filepath = os.path.join(AUDIO_DIR, filename)
         
-        # Generate Audio
         communicate = edge_tts.Communicate(request.text, selected_voice, rate=rate, pitch=pitch)
         await communicate.save(filepath)
         
-        return {
-            "status": "success", 
-            "url": f"/api/audio/{filename}?v={base_id}",
-            "meta": f"{lang} {gender.upper()}"
-        }
+        return {"status": "success", "url": f"/api/audio/{filename}?v={base_id}"}
     except Exception as e:
-        print(f"Backend Error: {e}")
-        raise HTTPException(status_code=500, detail="Neural Engine Failure")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/audio/{file_name}")
 async def get_audio(file_name: str):
     file_path = os.path.join(AUDIO_DIR, file_name)
-    if os.path.exists(file_path):
-        return FileResponse(file_path, media_type="audio/mpeg")
-    return {"error": "File not found"}
+    return FileResponse(file_path) if os.path.exists(file_path) else HTTPException(404)
