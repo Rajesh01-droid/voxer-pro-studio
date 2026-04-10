@@ -18,10 +18,10 @@ app.add_middleware(
 
 AUDIO_DIR = "/tmp"
 
-# 100% Best Neural Voices for Hindi/Urdu/English
+# Ultra-High Quality Neural Voices
 VOICES = {
-    "English": "en-US-AndrewNeural",
-    "Hindi": "hi-IN-MadhuramNeural" # Ye sabse clear Hindi/Urdu voice hai
+    "English": {"male": "en-US-AndrewNeural", "female": "en-US-EmmaNeural"},
+    "Hindi": {"male": "hi-IN-MadhuramNeural", "female": "hi-IN-SwaraNeural"}
 }
 
 class VoiceRequest(BaseModel):
@@ -32,30 +32,43 @@ class VoiceRequest(BaseModel):
 async def generate_voice(request: VoiceRequest):
     try:
         if not request.text.strip():
-            return {"error": "Text is empty"}
+            return {"error": "Text empty"}
 
-        # Voice selection
-        selected_voice = VOICES.get(request.voice_group, VOICES["Hindi"])
-        
+        group = VOICES.get(request.voice_group, VOICES["Hindi"])
         base_id = uuid.uuid4().hex[:8]
-        filename = f"{base_id}.mp3"
-        filepath = os.path.join(AUDIO_DIR, filename)
         
-        # Crystal Clear Audio Settings
-        # Rate +0% (Normal speed), Pitch +0Hz (Natural tone)
-        communicate = edge_tts.Communicate(request.text, selected_voice, rate="+0%", pitch="+0Hz")
-        await communicate.save(filepath)
+        # 3 Professional Styles
+        styles = [
+            {"name": "Professional HD", "rate": "+0%", "pitch": "+0Hz", "id": "prof"},
+            {"name": "Fast & Energetic", "rate": "+25%", "pitch": "+1Hz", "id": "fast"},
+            {"name": "Slow & Narrative", "rate": "-15%", "pitch": "-2Hz", "id": "slow"}
+        ]
         
-        sample_url = f"/api/audio/{filename}"
+        tasks = []
+        male_samples = []
+        female_samples = []
+
+        for s in styles:
+            # Male Generation
+            m_file = f"m_{s['id']}_{base_id}.mp3"
+            m_path = os.path.join(AUDIO_DIR, m_file)
+            tasks.append(edge_tts.Communicate(request.text, group["male"], rate=s['rate'], pitch=s['pitch']).save(m_path))
+            male_samples.append({"style": s['name'], "url": f"/api/audio/{m_file}"})
+
+            # Female Generation
+            f_file = f"f_{s['id']}_{base_id}.mp3"
+            f_path = os.path.join(AUDIO_DIR, f_file)
+            tasks.append(edge_tts.Communicate(request.text, group["female"], rate=s['rate'], pitch=s['pitch']).save(f_path))
+            female_samples.append({"style": s['name'], "url": f"/api/audio/{f_file}"})
+
+        await asyncio.gather(*tasks)
         
-        # Return samples in the format your frontend expects
         return {
             "status": "success",
-            "male_samples": [{"style": "Crystal Clear HD", "url": sample_url}],
-            "female_samples": [{"style": "Natural Neural", "url": sample_url}]
+            "male_samples": male_samples,
+            "female_samples": female_samples
         }
     except Exception as e:
-        print(f"Error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/audio/{file_name}")
@@ -63,4 +76,4 @@ async def get_audio(file_name: str):
     file_path = os.path.join(AUDIO_DIR, file_name)
     if os.path.exists(file_path):
         return FileResponse(file_path, media_type="audio/mpeg")
-    raise HTTPException(status_code=404, detail="File not found")
+    raise HTTPException(status_code=404)
