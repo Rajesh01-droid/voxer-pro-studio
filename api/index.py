@@ -12,7 +12,8 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 
 AUDIO_DIR = "/tmp"
 
-# ElevenLabs Equivalent High-End Models
+# Ultra-High Quality Neural Models (ElevenLabs Level)
+# hi-IN-Madhuram aur Swara Roman Urdu ko behtareen samajhte hain
 VOICE_MODELS = {
     "English": {"m": "en-US-AndrewNeural", "f": "en-US-AvaNeural"},
     "Hindi": {"m": "hi-IN-MadhuramNeural", "f": "hi-IN-SwaraNeural"}
@@ -21,44 +22,30 @@ VOICE_MODELS = {
 class VoiceRequest(BaseModel):
     text: str
     voice_group: str
+    gender: str
 
 @app.post("/api/generate")
 async def generate_voice(request: VoiceRequest):
     try:
-        if not request.text.strip(): return {"error": "Text is empty"}
+        if not request.text.strip(): return {"error": "Script is empty"}
         
-        # Smart Selection Logic
+        # Smart Language & Model Selection
         lang = "Hindi" if request.voice_group == "Hindi" else "English"
-        group = VOICE_MODELS[lang]
+        selected_voice = VOICE_MODELS[lang][request.gender]
         
         base_id = uuid.uuid4().hex[:6]
+        filename = f"{request.gender}_{base_id}.mp3"
+        filepath = os.path.join(AUDIO_DIR, filename)
         
-        # 3 Smart Levels: Professional, Deep, aur Soft (ElevenLabs Style)
-        configs = [
-            {"id": f"m_pro_{base_id}", "v": group["m"], "r": "+0%", "p": "+0Hz", "label": "Professional Studio"},
-            {"id": f"f_pro_{base_id}", "v": group["f"], "r": "+0%", "p": "+0Hz", "label": "Crystal Female (HD)"},
-            {"id": f"m_deep_{base_id}", "v": group["m"], "r": "-5%", "p": "-3Hz", "label": "Deep Narrative (BASS)"}
-        ]
-        
-        tasks = []
-        male_samples = []
-        female_samples = []
-
-        for c in configs:
-            path = os.path.join(AUDIO_DIR, f"{c['id']}.mp3")
-            # Creating the task
-            tasks.append(edge_tts.Communicate(request.text, c["v"], rate=c["r"], pitch=c["p"]).save(path))
-            
-            sample_data = {"style": c["label"], "url": f"/api/audio/{c['id']}.mp3"}
-            if c["id"].startswith("m_"): male_samples.append(sample_data)
-            else: female_samples.append(sample_data)
-
-        await asyncio.gather(*tasks)
+        # Engine Settings for Natural Human Flow
+        # Rate: +0% (Perfect for Roman Urdu), Pitch: -2Hz (Deep Studio Feel)
+        communicate = edge_tts.Communicate(request.text, selected_voice, rate="+0%", pitch="-1Hz")
+        await communicate.save(filepath)
         
         return {
             "status": "success",
-            "male_samples": male_samples,
-            "female_samples": female_samples
+            "url": f"/api/audio/{filename}",
+            "voice_type": f"{lang} {request.gender.upper()}"
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
