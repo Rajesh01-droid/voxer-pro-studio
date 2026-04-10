@@ -12,8 +12,7 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 
 AUDIO_DIR = "/tmp"
 
-# Ultra-High Quality Neural Models (ElevenLabs Level)
-# hi-IN-Madhuram aur Swara Roman Urdu ko behtareen samajhte hain
+# High-End Neural Models
 VOICE_MODELS = {
     "English": {"m": "en-US-AndrewNeural", "f": "en-US-AvaNeural"},
     "Hindi": {"m": "hi-IN-MadhuramNeural", "f": "hi-IN-SwaraNeural"}
@@ -27,30 +26,32 @@ class VoiceRequest(BaseModel):
 @app.post("/api/generate")
 async def generate_voice(request: VoiceRequest):
     try:
-        if not request.text.strip(): return {"error": "Script is empty"}
+        if not request.text.strip():
+            return {"error": "Text is empty"}
         
-        # Smart Language & Model Selection
-        lang = "Hindi" if request.voice_group == "Hindi" else "English"
-        selected_voice = VOICE_MODELS[lang][request.gender]
+        # Explicitly choosing voice based on request to avoid state issues
+        target_group = VOICE_MODELS.get(request.voice_group, VOICE_MODELS["English"])
+        selected_voice = target_group.get(request.gender, target_group["m"])
         
-        base_id = uuid.uuid4().hex[:6]
-        filename = f"{request.gender}_{base_id}.mp3"
+        base_id = uuid.uuid4().hex[:8]
+        filename = f"{base_id}.mp3"
         filepath = os.path.join(AUDIO_DIR, filename)
         
-        # Engine Settings for Natural Human Flow
-        # Rate: +0% (Perfect for Roman Urdu), Pitch: -2Hz (Deep Studio Feel)
+        # Studio Quality settings
         communicate = edge_tts.Communicate(request.text, selected_voice, rate="+0%", pitch="-1Hz")
         await communicate.save(filepath)
         
         return {
             "status": "success",
-            "url": f"/api/audio/{filename}",
-            "voice_type": f"{lang} {request.gender.upper()}"
+            "url": f"/api/audio/{filename}?v={base_id}" # Versioning to bypass browser cache
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        print(f"Error: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 @app.get("/api/audio/{file_name}")
 async def get_audio(file_name: str):
     file_path = os.path.join(AUDIO_DIR, file_name)
-    return FileResponse(file_path) if os.path.exists(file_path) else HTTPException(404)
+    if os.path.exists(file_path):
+        return FileResponse(file_path, media_type="audio/mpeg")
+    return {"error": "File not found"}
