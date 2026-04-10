@@ -3,148 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEURAL STUDIO | Next-Gen AI</title>
+    <title>NEURAL STUDIO | AI Audio Engine</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&family=Space+Mono&display=swap');
         
-        :root { --glow: #00ff88; --bg: #08090a; --card: #111216; }
+        :root { --glow: #00ff88; --bg: #050607; --card: #0e1013; }
         
-        /* Responsive body setup */
-        html, body { 
-            min-height: 100%; 
-            background: var(--bg); 
-            color: #fff; 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            margin: 0;
-            padding: 0;
+        body { 
+            background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; 
+            min-height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center;
         }
 
-        .main-wrapper { 
-            min-height: 100vh; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            padding: 15px; 
-            background: radial-gradient(circle at top right, #1a1c20, #08090a);
+        .main-wrapper { width: 100%; max-width: 800px; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+
+        /* Real-time Stats Header */
+        .stats-bar {
+            background: rgba(255,255,255,0.03); border: 1px solid #222; padding: 12px 25px;
+            border-radius: 50px; margin-bottom: 25px; display: flex; gap: 20px; align-items: center;
+            backdrop-filter: blur(10px);
         }
+        .stat-item { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: #777; }
+        .stat-item span { color: var(--glow); font-weight: bold; }
+        .pulse { width: 10px; height: 10px; background: var(--glow); border-radius: 50%; box-shadow: 0 0 15px var(--glow); animation: pulse-anim 2s infinite; }
+
+        @keyframes pulse-anim { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
 
         .studio-card { 
-            background: var(--card); 
-            border: 1px solid #222; 
-            border-radius: 30px; 
-            padding: 30px; 
-            width: 100%; 
-            max-width: 750px; 
-            position: relative;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+            background: var(--card); border: 1px solid #1f2126; border-radius: 40px; 
+            padding: 40px; width: 100%; box-shadow: 0 50px 100px rgba(0,0,0,0.8);
+            position: relative; overflow: hidden;
         }
 
-        .neural-title { 
-            font-weight: 800; 
-            font-size: clamp(1.5rem, 5vw, 2.2rem); 
-            color: var(--glow); 
-            letter-spacing: -1.5px; 
-            margin-bottom: 5px; 
-        }
+        .neural-title { font-weight: 800; font-size: clamp(1.5rem, 6vw, 2.2rem); color: var(--glow); letter-spacing: -1.5px; text-transform: uppercase; }
         
-        .toggle-container { 
-            background: #000; 
-            padding: 5px; 
-            border-radius: 18px; 
-            display: flex; 
-            gap: 5px; 
-            border: 1px solid #333; 
-        }
+        .toggle-container { background: #000; padding: 5px; border-radius: 18px; display: flex; border: 1px solid #222; gap: 5px; }
+        .t-btn { flex: 1; border: none; background: transparent; color: #555; padding: 12px; border-radius: 14px; font-weight: 700; font-size: 0.85rem; transition: 0.3s; white-space: nowrap; }
+        .t-btn.active { background: #fff; color: #000; box-shadow: 0 5px 15px rgba(255,255,255,0.1); }
 
-        .t-btn { 
-            flex: 1; 
-            border: none; 
-            background: transparent; 
-            color: #666; 
-            padding: 10px 5px; 
-            border-radius: 12px; 
-            font-weight: 700; 
-            font-size: 0.8rem; 
-            transition: 0.3s;
-            white-space: nowrap;
-        }
-
-        .t-btn.active { 
-            background: #fff; 
-            color: #000; 
-            box-shadow: 0 5px 15px rgba(255,255,255,0.1); 
-        }
-
-        .input-zone { margin-top: 25px; position: relative; }
-        
+        .input-zone { margin-top: 30px; border-radius: 25px; background: #000; padding: 25px; border: 1px solid #222; transition: 0.3s; }
+        .input-zone:focus-within { border-color: var(--glow); box-shadow: 0 0 20px rgba(0,255,136,0.05); }
         .script-input { 
-            background: transparent; 
-            border: none; 
-            color: #fff; 
-            font-size: 1.1rem; 
-            height: 150px; 
-            width: 100%; 
-            outline: none; 
-            resize: none;
-            line-height: 1.5; 
-            border-bottom: 1px solid #333;
+            background: transparent; border: none; color: #fff; font-size: 1.2rem; 
+            height: 150px; width: 100%; outline: none; resize: none; line-height: 1.6;
         }
 
         .gen-btn { 
-            background: var(--glow); 
-            color: #000; 
-            width: 100%; 
-            padding: 18px; 
-            border-radius: 15px; 
-            font-weight: 800; 
-            border: none; 
-            font-size: 1rem;
-            margin-top: 20px; 
-            transition: 0.4s;
+            background: var(--glow); color: #000; width: 100%; padding: 22px; 
+            border-radius: 22px; font-weight: 800; border: none; font-size: 1.1rem;
+            margin-top: 25px; transition: 0.4s; text-transform: uppercase; letter-spacing: 1px;
         }
+        .gen-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0,255,136,0.3); }
+        .gen-btn:disabled { background: #222; color: #555; transform: none; box-shadow: none; }
 
-        .gen-btn:hover { transform: scale(1.01); box-shadow: 0 0 30px rgba(0,255,136,0.2); }
-
-        /* Compact Result Area - Responsive */
         .result-overlay { 
-            background: #1a1c22; 
-            border-radius: 15px; 
-            padding: 12px 20px; 
-            margin-top: 20px; 
-            display: none; 
-            align-items: center; 
-            gap: 12px;
-            border: 1px solid var(--glow);
-            flex-wrap: wrap; /* Takay choti screen pe elements niche aa sakein */
+            background: #15171b; border-radius: 25px; padding: 18px; 
+            margin-top: 25px; display: none; align-items: center; gap: 15px;
+            border: 1px solid #222; border-left: 6px solid var(--glow);
         }
 
-        /* Responsive Media Queries */
         @media (max-width: 576px) {
-            .studio-card { padding: 20px; border-radius: 25px; }
-            .t-btn { font-size: 0.75rem; padding: 8px 4px; }
-            .script-input { font-size: 1rem; height: 120px; }
-            .gen-btn { padding: 15px; font-size: 0.9rem; }
-            .result-overlay { justify-content: center; }
+            .studio-card { padding: 25px; border-radius: 30px; }
+            .stats-bar { padding: 8px 15px; flex-wrap: wrap; justify-content: center; }
+            .script-input { height: 120px; font-size: 1rem; }
+            .gen-btn { padding: 18px; font-size: 0.9rem; }
         }
     </style>
 </head>
 <body>
 
 <div class="main-wrapper">
+    <div class="stats-bar">
+        <div class="pulse"></div>
+        <div class="stat-item">OS: <span>NEURAL-V3</span></div>
+        <div class="stat-item">GLOBAL USERS: <span id="globalCount">...</span></div>
+        <div class="stat-item">SRV: <span>STABLE</span></div>
+    </div>
+
     <div class="studio-card">
         <div class="text-center mb-4">
-            <div class="neural-title">NEURAL STUDIO</div>
-            <p class="text-muted small">Crystal Clear AI Voice Machine</p>
+            <div class="neural-title">Neural Studio</div>
+            <p style="color: #666; font-size: 0.85rem; font-weight: 600;">Crystal Clear AI Voice Machine</p>
         </div>
 
-        <div class="row g-2 g-md-3">
+        <div class="row g-2 mb-2">
             <div class="col-6">
                 <div class="toggle-container" id="lGrp">
                     <button class="t-btn active" onclick="sw(this, 'lGrp')" data-v="English">English</button>
-                    <button class="t-btn" onclick="sw(this, 'lGrp')" data-v="Hindi">Urdu / Hindi</button>
+                    <button class="t-btn" onclick="sw(this, 'lGrp')" data-v="Hindi">Roman Urdu</button>
                 </div>
             </div>
             <div class="col-6">
@@ -156,16 +103,16 @@
         </div>
 
         <div class="input-zone">
-            <textarea id="txt" class="script-input" placeholder="Type Roman Urdu (e.g., 'Kese ho bhai?')..."></textarea>
+            <textarea id="txt" class="script-input" placeholder="Type Roman Urdu here (e.g. 'Bhai kese ho?')..."></textarea>
         </div>
 
-        <button id="mainBtn" class="gen-btn" onclick="run()">GENERATE CRYSTAL VOICE</button>
+        <button id="mainBtn" class="gen-btn" onclick="run()">Generate Neural Voice</button>
 
         <div id="resBox" class="result-overlay">
-            <div class="flex-grow-1" style="min-width: 200px;">
-                <audio id="aud" controls class="w-100" style="filter: invert(1); height: 35px;"></audio>
+            <div class="flex-grow-1">
+                <audio id="aud" controls class="w-100" style="filter: invert(1); height: 40px;"></audio>
             </div>
-            <a id="dl" href="#" download class="btn btn-light btn-sm rounded-circle" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
+            <a id="dl" href="#" download class="btn btn-outline-light rounded-circle" style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
                 <i class="fa-solid fa-download"></i>
             </a>
         </div>
@@ -173,6 +120,18 @@
 </div>
 
 <script>
+    const API_BASE = "http://localhost:8000"; // Apne server ka URL yahan dalein
+
+    // Fetch Stats on Load
+    async function loadStats() {
+        try {
+            const r = await fetch(`${API_BASE}/api/stats`);
+            const d = await r.json();
+            document.getElementById('globalCount').innerText = d.total_generated.toLocaleString();
+        } catch(e) { console.log("Stats error"); }
+    }
+    loadStats();
+
     function sw(b, p) {
         document.getElementById(p).querySelectorAll('.t-btn').forEach(x => x.classList.remove('active'));
         b.classList.add('active');
@@ -187,10 +146,10 @@
 
         const btn = document.getElementById('mainBtn');
         btn.disabled = true;
-        btn.innerText = "TUNING NEURAL AUDIO...";
+        btn.innerText = "PROCESSING AUDIO...";
 
         try {
-            const r = await fetch('/api/generate', {
+            const r = await fetch(`${API_BASE}/api/generate`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({text, voice_group: lang, gender})
@@ -198,16 +157,17 @@
             const d = await r.json();
             if(d.url) {
                 document.getElementById('resBox').style.display = 'flex';
-                const a = document.getElementById('aud');
-                a.src = d.url;
-                document.getElementById('dl').href = d.url;
-                a.play();
+                const audioUrl = API_BASE + d.url;
+                document.getElementById('aud').src = audioUrl;
+                document.getElementById('dl').href = audioUrl;
+                document.getElementById('globalCount').innerText = d.count.toLocaleString();
+                document.getElementById('aud').play();
             }
         } catch(e) {
-            alert("Error");
+            alert("Connection Error. Make sure backend is running.");
         } finally {
             btn.disabled = false;
-            btn.innerText = "GENERATE CRYSTAL VOICE";
+            btn.innerText = "Generate Neural Voice";
         }
     }
 </script>
