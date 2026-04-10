@@ -8,20 +8,14 @@ import asyncio
 from pydantic import BaseModel
 
 app = FastAPI()
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"]
-)
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 AUDIO_DIR = "/tmp"
 
-# Ultra-High Quality Neural Voices
-VOICES = {
-    "English": {"male": "en-US-AndrewNeural", "female": "en-US-EmmaNeural"},
-    "Hindi": {"male": "hi-IN-MadhuramNeural", "female": "hi-IN-SwaraNeural"}
+# ElevenLabs Equivalent High-End Models
+VOICE_MODELS = {
+    "English": {"m": "en-US-AndrewNeural", "f": "en-US-AvaNeural"},
+    "Hindi": {"m": "hi-IN-MadhuramNeural", "f": "hi-IN-SwaraNeural"}
 }
 
 class VoiceRequest(BaseModel):
@@ -31,35 +25,33 @@ class VoiceRequest(BaseModel):
 @app.post("/api/generate")
 async def generate_voice(request: VoiceRequest):
     try:
-        if not request.text.strip():
-            return {"error": "Text empty"}
-
-        group = VOICES.get(request.voice_group, VOICES["Hindi"])
-        base_id = uuid.uuid4().hex[:8]
+        if not request.text.strip(): return {"error": "Text is empty"}
         
-        # 3 Professional Styles
-        styles = [
-            {"name": "Professional HD", "rate": "+0%", "pitch": "+0Hz", "id": "prof"},
-            {"name": "Fast & Energetic", "rate": "+25%", "pitch": "+1Hz", "id": "fast"},
-            {"name": "Slow & Narrative", "rate": "-15%", "pitch": "-2Hz", "id": "slow"}
+        # Smart Selection Logic
+        lang = "Hindi" if request.voice_group == "Hindi" else "English"
+        group = VOICE_MODELS[lang]
+        
+        base_id = uuid.uuid4().hex[:6]
+        
+        # 3 Smart Levels: Professional, Deep, aur Soft (ElevenLabs Style)
+        configs = [
+            {"id": f"m_pro_{base_id}", "v": group["m"], "r": "+0%", "p": "+0Hz", "label": "Professional Studio"},
+            {"id": f"f_pro_{base_id}", "v": group["f"], "r": "+0%", "p": "+0Hz", "label": "Crystal Female (HD)"},
+            {"id": f"m_deep_{base_id}", "v": group["m"], "r": "-5%", "p": "-3Hz", "label": "Deep Narrative (BASS)"}
         ]
         
         tasks = []
         male_samples = []
         female_samples = []
 
-        for s in styles:
-            # Male Generation
-            m_file = f"m_{s['id']}_{base_id}.mp3"
-            m_path = os.path.join(AUDIO_DIR, m_file)
-            tasks.append(edge_tts.Communicate(request.text, group["male"], rate=s['rate'], pitch=s['pitch']).save(m_path))
-            male_samples.append({"style": s['name'], "url": f"/api/audio/{m_file}"})
-
-            # Female Generation
-            f_file = f"f_{s['id']}_{base_id}.mp3"
-            f_path = os.path.join(AUDIO_DIR, f_file)
-            tasks.append(edge_tts.Communicate(request.text, group["female"], rate=s['rate'], pitch=s['pitch']).save(f_path))
-            female_samples.append({"style": s['name'], "url": f"/api/audio/{f_file}"})
+        for c in configs:
+            path = os.path.join(AUDIO_DIR, f"{c['id']}.mp3")
+            # Creating the task
+            tasks.append(edge_tts.Communicate(request.text, c["v"], rate=c["r"], pitch=c["p"]).save(path))
+            
+            sample_data = {"style": c["label"], "url": f"/api/audio/{c['id']}.mp3"}
+            if c["id"].startswith("m_"): male_samples.append(sample_data)
+            else: female_samples.append(sample_data)
 
         await asyncio.gather(*tasks)
         
@@ -74,6 +66,4 @@ async def generate_voice(request: VoiceRequest):
 @app.get("/api/audio/{file_name}")
 async def get_audio(file_name: str):
     file_path = os.path.join(AUDIO_DIR, file_name)
-    if os.path.exists(file_path):
-        return FileResponse(file_path, media_type="audio/mpeg")
-    raise HTTPException(status_code=404)
+    return FileResponse(file_path) if os.path.exists(file_path) else HTTPException(404)
