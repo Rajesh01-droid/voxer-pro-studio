@@ -8,12 +8,18 @@ import asyncio
 from pydantic import BaseModel
 
 app = FastAPI()
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+
+# Enable CORS for all requests
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 AUDIO_DIR = "/tmp"
 
-# 100% Fixed Models for Roman Urdu/Hindi
-# Madhuram is the king of Urdu Male voices
+# High-End Neural Models for Studio Quality
 VOICE_MODELS = {
     "English": {"m": "en-US-AndrewNeural", "f": "en-US-AvaNeural"},
     "Hindi": {"m": "hi-IN-MadhuramNeural", "f": "hi-IN-SwaraNeural"}
@@ -28,33 +34,39 @@ class VoiceRequest(BaseModel):
 async def generate_voice(request: VoiceRequest):
     try:
         if not request.text.strip():
-            return {"error": "Empty text"}
+            return {"error": "Script is empty"}
         
-        # LOGIC FIX: Force Hindi if keywords are found or if selected
-        v_group = request.voice_group
-        # Agar text mein desi words hain toh force Hindi
-        desi_keywords = ["hai", "kya", "thek", "kam", "zindagi", "salaam", "bhai"]
-        if any(word in request.text.lower() for word in desi_keywords):
-            v_group = "Hindi"
-
-        group = VOICE_MODELS.get(v_group, VOICE_MODELS["Hindi"])
-        # Explicitly choosing Male/Female
-        selected_voice = group["m"] if request.gender == "m" else group["f"]
+        # Explicit Language Selection
+        lang = "Hindi" if "Hindi" in request.voice_group else "English"
+        gender = "m" if request.gender == "m" else "f"
+        
+        selected_voice = VOICE_MODELS[lang][gender]
+        
+        # Audio Tuning for Crystal Clarity
+        # Male voice ko heavy aur clear karne ke liye -2Hz pitch aur slow rate use kiya hai
+        rate = "-4%" if gender == "m" else "+0%"
+        pitch = "-2Hz" if gender == "m" else "+0Hz"
         
         base_id = uuid.uuid4().hex[:10]
         filename = f"{base_id}.mp3"
         filepath = os.path.join(AUDIO_DIR, filename)
         
-        # Pitch optimized for deep male voice
-        communicate = edge_tts.Communicate(request.text, selected_voice, rate="+0%", pitch="-2Hz")
+        # Generate Audio
+        communicate = edge_tts.Communicate(request.text, selected_voice, rate=rate, pitch=pitch)
         await communicate.save(filepath)
         
-        return {"status": "success", "url": f"/api/audio/{filename}?v={base_id}"}
+        return {
+            "status": "success", 
+            "url": f"/api/audio/{filename}?v={base_id}",
+            "meta": f"{lang} {gender.upper()}"
+        }
     except Exception as e:
-        print(f"Error: {str(e)}")
-        raise HTTPException(status_code=500, detail="Neural Engine Error")
+        print(f"Backend Error: {e}")
+        raise HTTPException(status_code=500, detail="Neural Engine Failure")
 
 @app.get("/api/audio/{file_name}")
 async def get_audio(file_name: str):
     file_path = os.path.join(AUDIO_DIR, file_name)
-    return FileResponse(file_path) if os.path.exists(file_path) else HTTPException(404)
+    if os.path.exists(file_path):
+        return FileResponse(file_path, media_type="audio/mpeg")
+    return {"error": "File not found"}
