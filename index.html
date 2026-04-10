@@ -3,118 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEURAL STUDIO AI | Pro v2.0</title>
+    <title>NEURAL STUDIO | Pro Voice Engine</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
-        :root { --glow: #00ff88; --dark: #0a0a0a; --card: #141414; }
-        body { background: var(--dark); color: #fff; font-family: 'Space Grotesk', sans-serif; overflow-x: hidden; }
-        .neural-title { font-weight: 700; font-size: 2.5rem; color: var(--glow); text-shadow: 0 0 20px rgba(0,255,136,0.2); }
-        .studio-card { background: var(--card); border: 1px solid #333; border-radius: 30px; padding: 40px; box-shadow: 0 20px 80px rgba(0,0,0,0.6); }
-        .toggle-box { background: #1a1a1a; padding: 8px; border-radius: 18px; display: flex; gap: 8px; border: 1px solid #333; }
-        .toggle-btn { flex: 1; padding: 12px; border-radius: 14px; border: none; background: transparent; color: #666; font-weight: 700; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 0.9rem; }
-        .toggle-btn.active { background: #fff; color: #000; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255,255,255,0.1); }
-        .script-area { background: transparent; border: none; color: #fff; font-size: 1.5rem; min-height: 200px; width: 100%; outline: none; resize: none; margin-top: 25px; line-height: 1.4; }
-        .generate-btn { background: var(--glow); color: #000; width: 100%; padding: 22px; border-radius: 20px; font-weight: 800; border: none; font-size: 1.2rem; transition: 0.4s; margin-top: 30px; letter-spacing: 1px; }
-        .generate-btn:hover { transform: translateY(-3px); box-shadow: 0 0 40px rgba(0,255,136,0.4); }
-        .generate-btn:disabled { background: #222; color: #555; transform: none; }
-        .output-panel { background: #1a1a1a; border: 1px solid #333; border-radius: 25px; padding: 25px; margin-top: 40px; border-left: 6px solid var(--glow); display: none; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        
+        :root { --accent: #00ff88; --dark: #0f1115; --card: #1a1d23; }
+        body { background: var(--dark); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; }
+
+        .studio-container { max-width: 800px; margin: 60px auto; padding: 20px; }
+        .studio-card { background: var(--card); border: 1px solid #2d323d; border-radius: 32px; padding: 40px; box-shadow: 0 30px 60px rgba(0,0,0,0.4); }
+
+        .title-glow { font-weight: 800; font-size: 2.5rem; letter-spacing: -1.5px; background: linear-gradient(to right, #fff, #00ff88); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .option-group { background: #0f1115; padding: 8px; border-radius: 20px; display: flex; gap: 8px; border: 1px solid #2d323d; }
+        .opt-btn { flex: 1; border: none; background: transparent; color: #64748b; padding: 12px; border-radius: 14px; font-weight: 700; transition: 0.3s; font-size: 0.9rem; }
+        .opt-btn.active { background: #fff; color: #000; }
+
+        .script-box { background: transparent; border: none; color: #fff; font-size: 1.4rem; min-height: 180px; width: 100%; outline: none; resize: none; margin-top: 30px; border-bottom: 1px solid #2d323d; }
+
+        .btn-generate { background: var(--accent); color: #000; width: 100%; padding: 22px; border-radius: 20px; font-weight: 800; border: none; font-size: 1.2rem; transition: 0.4s; margin-top: 30px; }
+        .btn-generate:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(0,255,136,0.2); opacity: 0.9; }
+        .btn-generate:disabled { background: #2d323d; color: #64748b; transform: none; box-shadow: none; }
+
+        .result-panel { background: #1f232b; border-radius: 24px; padding: 25px; margin-top: 30px; display: none; border-left: 6px solid var(--accent); }
     </style>
 </head>
 <body>
 
-<div class="container py-5" style="max-width: 800px;">
+<div class="studio-container">
     <div class="text-center mb-5">
-        <div class="neural-title">NEURAL STUDIO AI</div>
-        <p class="text-muted fs-5">Studio Quality Voice Machine Learning Engine</p>
+        <h1 class="title-glow">NEURAL STUDIO</h1>
+        <p class="text-muted fw-500">Professional Roman Urdu & English AI Generation</p>
     </div>
 
     <div class="studio-card">
         <div class="row g-4">
             <div class="col-md-6">
-                <label class="small text-uppercase fw-bold text-muted mb-2 d-block">1. Select Language</label>
-                <div class="toggle-box" id="langGroup">
-                    <button class="toggle-btn active" data-val="English">ENGLISH (US)</button>
-                    <button class="toggle-btn" data-val="Hindi">URDU / HINDI</button>
+                <p class="small fw-bold text-muted text-uppercase mb-2">Language Engine</p>
+                <div class="option-group" id="langSelect">
+                    <button class="opt-btn active" onclick="updateUI(this, 'langSelect')" data-value="English">English</button>
+                    <button class="opt-btn" onclick="updateUI(this, 'langSelect')" data-value="Hindi">Urdu / Hindi</button>
                 </div>
             </div>
             <div class="col-md-6">
-                <label class="small text-uppercase fw-bold text-muted mb-2 d-block">2. Select Gender</label>
-                <div class="toggle-box" id="genGroup">
-                    <button class="toggle-btn active" data-val="m"><i class="fa-solid fa-mars me-2"></i>MALE</button>
-                    <button class="toggle-btn" data-val="f"><i class="fa-solid fa-venus me-2"></i>FEMALE</button>
+                <p class="small fw-bold text-muted text-uppercase mb-2">Voice Gender</p>
+                <div class="option-group" id="genSelect">
+                    <button class="opt-btn active" onclick="updateUI(this, 'genSelect')" data-value="m"><i class="fa-solid fa-mars me-1"></i> Male</button>
+                    <button class="opt-btn" onclick="updateUI(this, 'genSelect')" data-value="f"><i class="fa-solid fa-venus me-1"></i> Female</button>
                 </div>
             </div>
         </div>
 
-        <textarea id="scriptInput" class="script-area" placeholder="Write Roman Urdu or English... For better results, use full stops and commas."></textarea>
+        <textarea id="scriptInput" class="script-box" placeholder="Start typing your script here..."></textarea>
         
-        <button id="mainBtn" class="generate-btn" onclick="processVoice()">GENERATE HD AUDIO</button>
-    </div>
+        <button id="genBtn" class="btn-generate" onclick="generateAudio()">GENERATE CRYSTAL VOICE</button>
 
-    <div id="outputPanel" class="output-panel">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <div>
-                <h5 class="m-0 text-white fw-bold">Neural Output Ready</h5>
-                <span class="small text-muted" id="modelInfo">Model: Neural v2.0</span>
+        <div id="resultBox" class="result-panel">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="badge bg-dark rounded-pill px-3 py-2">NEURAL OUTPUT READY</span>
+                <a id="downloadBtn" href="#" download class="btn btn-outline-light btn-sm rounded-pill px-3"><i class="fa-solid fa-download me-1"></i> Save</a>
             </div>
-            <a id="dlLink" href="#" download class="btn btn-light btn-sm rounded-pill px-4 fw-bold">Download</a>
+            <audio id="audioPlayer" controls class="w-100" style="filter: invert(1); height: 45px;"></audio>
         </div>
-        <audio id="player" controls class="w-100" style="filter: invert(1); height: 50px;"></audio>
     </div>
 </div>
 
 <script>
-    // Robust selection logic
-    document.querySelectorAll('.toggle-box button').forEach(btn => {
-        btn.onclick = function() {
-            this.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-        }
-    });
+    function updateUI(btn, parentId) {
+        document.getElementById(parentId).querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
 
-    async function processVoice() {
+    async function generateAudio() {
         const text = document.getElementById('scriptInput').value.trim();
-        const lang = document.querySelector('#langGroup .active').getAttribute('data-val');
-        const gender = document.querySelector('#genGroup .active').getAttribute('data-val');
-        
-        if(!text) return Swal.fire({ icon: 'warning', title: 'Empty Text', background: '#1a1a1a', color: '#fff' });
+        const lang = document.querySelector('#langSelect .active').getAttribute('data-value');
+        const gender = document.querySelector('#genSelect .active').getAttribute('data-value');
 
-        const btn = document.getElementById('mainBtn');
+        if(!text) return Swal.fire({ icon: 'error', title: 'Oops...', text: 'Please enter some text first!', background: '#1a1d23', color: '#fff' });
+
+        const btn = document.getElementById('genBtn');
         btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-microchip fa-spin me-2"></i> ANALYZING NEURAL PATHS...';
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> GENERATING STUDIO QUALITY...';
 
         try {
-            const res = await fetch('/api/generate', {
+            const response = await fetch('/api/generate', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ text, voice_group: lang, gender: gender })
             });
-            
-            const data = await res.json();
-            
+
+            const data = await response.json();
+
             if(data.url) {
-                const panel = document.getElementById('outputPanel');
-                const player = document.getElementById('player');
-                panel.style.display = 'block';
+                document.getElementById('resultBox').style.display = 'block';
+                const player = document.getElementById('audioPlayer');
                 player.src = data.url;
-                document.getElementById('dlLink').href = data.url;
-                document.getElementById('modelInfo').innerText = `Model: ${lang} ${gender.toUpperCase()} Neural`;
+                document.getElementById('downloadBtn').href = data.url;
                 player.play();
                 
-                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-                
-                Swal.fire({ icon: 'success', title: 'Success', text: 'Voice Rendered Perfectly!', background: '#1a1a1a', color: '#fff', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
+                Swal.fire({ icon: 'success', title: 'Generated!', background: '#1a1d23', color: '#fff', timer: 2000, showConfirmButton: false });
             }
-        } catch(e) {
-            Swal.fire({ icon: 'error', title: 'Connection Failed', text: 'Backend is not responding.', background: '#1a1a1a', color: '#fff' });
+        } catch (error) {
+            Swal.fire({ icon: 'error', title: 'Connection Error', text: 'Backend is not responding.', background: '#1a1d23', color: '#fff' });
         } finally {
             btn.disabled = false;
-            btn.innerHTML = 'GENERATE HD AUDIO';
+            btn.innerText = 'GENERATE CRYSTAL VOICE';
         }
     }
 </script>
+
 </body>
 </html>
