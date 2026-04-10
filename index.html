@@ -18,7 +18,7 @@
         .navbar { background: #fff; border-bottom: 1px solid var(--border); padding: 15px 5%; position: sticky; top: 0; z-index: 1000; }
         .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: -1px; text-decoration: none; color: #000; }
 
-        /* Stats Section - Fixed Undefined */
+        /* Stats Section */
         .stat-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 15px; text-align:center; min-height: 90px; }
         .stat-lab { font-size: 0.65rem; font-weight: 800; color: var(--secondary); text-transform: uppercase; margin-bottom: 5px; }
         .stat-val { font-size: 1.4rem; font-weight: 800; color: #000; }
@@ -92,7 +92,7 @@
 
     <div class="studio-card mb-5">
         <div id="emotionBadge">DETECTING TONE...</div>
-        <textarea id="scriptInput" class="studio-textarea" placeholder="Type your script here... (Try adding words like 'Happy', 'Sad' or 'Scared' for auto-emotion)"></textarea>
+        <textarea id="scriptInput" class="studio-textarea" placeholder="Type your script here..."></textarea>
         <div class="gen-wrapper" id="mainBtn" onclick="generateAudio()">
             <div class="fill-progress" id="progressBar"></div>
             <div class="btn-label" id="btnLabel">GENERATE 100% CLEAR VOICE</div>
@@ -108,19 +108,15 @@
     let globalFemale = [];
     let waves = [];
 
-    // Simple Emotion Visual Feedback
     document.getElementById('scriptInput').oninput = function() {
         const val = this.value.toLowerCase();
         const badge = document.getElementById('emotionBadge');
         if(val.length < 5) { badge.style.display = 'none'; return; }
-        
         badge.style.display = 'block';
-        if(val.includes('happy') || val.includes('khush') || val.includes('great')) {
-            badge.innerText = '😊 HAPPY TONE DETECTED'; badge.style.color = '#10b981';
-        } else if(val.includes('sad') || val.includes('dukh') || val.includes('rona')) {
-            badge.innerText = '😔 SAD TONE DETECTED'; badge.style.color = '#3b82f6';
-        } else if(val.includes('darr') || val.includes('scared') || val.includes('khauf')) {
-            badge.innerText = '😨 SCARED TONE DETECTED'; badge.style.color = '#ef4444';
+        if(val.includes('happy') || val.includes('khush')) {
+            badge.innerText = '😊 HAPPY TONE'; badge.style.color = '#10b981';
+        } else if(val.includes('sad') || val.includes('dukh')) {
+            badge.innerText = '😔 SAD TONE'; badge.style.color = '#3b82f6';
         } else {
             badge.innerText = '🎙️ NATURAL TONE'; badge.style.color = '#64748b';
         }
@@ -131,22 +127,6 @@
         el.classList.add('active');
     }
 
-    // Stats Fetching (With Fallback to prevent Undefined)
-    async function fetchStats() {
-        try {
-            const res = await fetch('/live-stats');
-            const data = await res.json();
-            document.getElementById('s-active').innerText = data.active_users || '842';
-            document.getElementById('s-total').innerText = data.total_generated || '64K+';
-            document.getElementById('s-load').innerText = data.server_load || '4%';
-        } catch(e) {
-            console.log("Using default stats");
-        }
-    }
-    fetchStats(); 
-    setInterval(fetchStats, 5000);
-
-    // Generation Logic
     async function generateAudio() {
         const text = document.getElementById('scriptInput').value.trim();
         const langRaw = document.querySelector('.voice-pill.active').innerText;
@@ -156,27 +136,25 @@
         const btn = document.getElementById('mainBtn');
         const label = document.getElementById('btnLabel');
 
-        if(!text) return Swal.fire({ icon: 'error', title: 'Empty Script', text: 'Please write something first.', confirmButtonColor: '#000' });
+        if(!text) return Swal.fire('Error', 'Script is empty!', 'error');
 
         btn.classList.add('loading');
         btn.style.pointerEvents = 'none';
         
         let p = 0;
         const timer = setInterval(() => {
-            if(p < 95) { 
-                p += Math.random() * 15; 
-                if(p > 95) p = 95;
-                bar.style.width = p + '%'; 
-                label.innerText = 'CLEANING & GENERATING ' + Math.round(p) + '%'; 
-            }
-        }, 120);
+            if(p < 90) { p += 5; bar.style.width = p + '%'; label.innerText = 'GENERATING ' + p + '%'; }
+        }, 200);
 
         try {
-            const res = await fetch('/generate', {
+            // Updated to /api/generate for Vercel
+            const res = await fetch('/api/generate', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({text: text, voice_group: lang})
             });
+            
+            if (!res.ok) throw new Error('Server returned error');
             const data = await res.json();
             
             clearInterval(timer);
@@ -189,11 +167,11 @@
             setTimeout(() => {
                 renderPopup('male'); 
                 resetUI();
-            }, 300);
+            }, 500);
         } catch(e) { 
             clearInterval(timer); 
             resetUI();
-            Swal.fire('Error', 'Neural Engine connection failed.', 'error');
+            Swal.fire('Error', 'Neural Engine connection failed. Check if backend is running.', 'error');
         }
     }
 
@@ -201,24 +179,21 @@
         const samples = (gender === 'male') ? globalMale : globalFemale;
         let html = `
         <div class="gender-nav">
-            <button class="gender-btn ${gender==='male'?'active':''}" onclick="renderPopup('male')"><i class="fa-solid fa-mars"></i> Male</button>
-            <button class="gender-btn ${gender==='female'?'active':''}" onclick="renderPopup('female')"><i class="fa-solid fa-venus"></i> Female</button>
+            <button class="gender-btn ${gender==='male'?'active':''}" onclick="renderPopup('male')">Male</button>
+            <button class="gender-btn ${gender==='female'?'active':''}" onclick="renderPopup('female')">Female</button>
         </div>
-        <div id="popup-content" style="max-height: 400px; overflow-y: auto; padding-right:5px;">`;
+        <div id="popup-content">`;
         
         samples.forEach((s, idx) => {
             html += `
             <div class="wf-row">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <div class="text-start">
-                        <div class="fw-bold" style="font-size:0.9rem;">${s.style}</div>
-                        <div class="text-muted" style="font-size:0.7rem;">Neural Crystal HD</div>
-                    </div>
-                    <a href="${s.url}" download class="btn btn-dark btn-sm rounded-circle shadow-sm"><i class="fa-solid fa-download"></i></a>
+                    <div class="fw-bold">${s.style}</div>
+                    <a href="${s.url}" download class="btn btn-dark btn-sm rounded-pill">Download</a>
                 </div>
-                <div class="d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center gap-2">
                     <button class="play-trigger" onclick="togglePlay(${idx})"><i class="fa-solid fa-play" id="icon-${idx}"></i></button>
-                    <div id="wf-${idx}" style="flex:1; height:45px;"></div>
+                    <div id="wf-${idx}" style="flex:1;"></div>
                     <audio id="aud-${idx}" src="${s.url}" style="display:none;"></audio>
                 </div>
             </div>`;
@@ -226,13 +201,35 @@
         html += `</div>`;
 
         Swal.fire({
-            title: '<span style="font-weight:800;">Neural Samples</span>',
+            title: 'Your Neural Audio',
             html: html,
             showConfirmButton: false,
-            width: '480px',
-            customClass: { popup: 'rounded-4 shadow-lg' },
+            width: '450px',
             didOpen: () => { initWaves(samples); }
         });
+    }
+
+    function initWaves(samples) {
+        waves = [];
+        samples.forEach((s, i) => {
+            const ws = WaveSurfer.create({ 
+                container: `#wf-${i}`, 
+                waveColor: '#d1d5db', 
+                progressColor: '#000', 
+                height: 40,
+                barWidth: 2
+            });
+            ws.load(s.url);
+            waves[i] = ws;
+            const aud = document.getElementById(`aud-${i}`);
+            aud.onplay = () => { document.getElementById(`icon-${i}`).className="fa-solid fa-pause"; waves[i].play(); }
+            aud.onpause = () => { document.getElementById(`icon-${i}`).className="fa-solid fa-play"; waves[i].pause(); }
+        });
+    }
+
+    function togglePlay(i) {
+        const aud = document.getElementById(`aud-${i}`);
+        aud.paused ? aud.play() : aud.pause();
     }
 
     function resetUI() {
@@ -242,60 +239,17 @@
         document.getElementById('btnLabel').innerText = 'GENERATE 100% CLEAR VOICE';
     }
 
-    function initWaves(samples) {
-        if(waves.length > 0) waves.forEach(w => { try { w.destroy(); } catch(e){} });
-        waves = [];
-        
-        samples.forEach((s, i) => {
-            const container = document.getElementById(`wf-${i}`);
-            if(!container) return;
-
-            const ws = WaveSurfer.create({ 
-                container: container, 
-                waveColor: '#d1d5db', 
-                progressColor: '#000', 
-                height: 45, 
-                barWidth: 2, 
-                barGap: 3, 
-                barRadius: 4
-            });
-            ws.load(s.url);
-            waves[i] = ws;
-
-            const aud = document.getElementById(`aud-${i}`);
-            const icon = document.getElementById(`icon-${i}`);
-
-            aud.onplay = () => { icon.className="fa-solid fa-pause"; waves[i].play(); }
-            aud.onpause = () => { icon.className="fa-solid fa-play"; waves[i].pause(); }
-            ws.on('finish', () => { icon.className="fa-solid fa-play"; });
-        });
-    }
-
-    function togglePlay(i) {
-        const aud = document.getElementById(`aud-${i}`);
-        aud.paused ? aud.play() : aud.pause();
-    }
-
-    // Live Feed Simulation
-    const unames = ["Arsalan", "Zain M.", "Sarah", "Rahul", "Mehak", "Ali", "Hamza", "Danish"];
+    const unames = ["Arsalan", "Zain M.", "Sarah", "Ali"];
     function addFeed() {
         const list = document.getElementById('feedList');
-        const user = unames[Math.floor(Math.random()*unames.length)];
+        if(!list) return;
         const item = document.createElement('div');
         item.className = 'feed-item';
-        item.innerHTML = `
-            <img src="https://i.pravatar.cc/100?u=${Math.random()}" class="user-av">
-            <div style="flex:1">
-                <div class="fw-bold small">${user}</div>
-                <div class="text-muted" style="font-size:0.75rem;">Generated Clean Audio</div>
-            </div>
-            <div class="small fw-bold text-success" style="font-size:0.65rem;">JUST NOW</div>
-        `;
+        item.innerHTML = `<div class="user-av"></div><div><div class="fw-bold">${unames[Math.floor(Math.random()*unames.length)]}</div><div class="text-muted small">Generated Audio</div></div>`;
         list.prepend(item);
-        if(list.children.length > 6) list.removeChild(list.lastChild);
+        if(list.children.length > 5) list.removeChild(list.lastChild);
     }
-    setInterval(addFeed, 4500);
-    window.onload = () => { for(let i=0; i<4; i++) setTimeout(addFeed, i*300); };
+    setInterval(addFeed, 5000);
 </script>
 </body>
 </html>
