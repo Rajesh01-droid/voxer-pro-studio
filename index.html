@@ -3,261 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VOXER PRO | Neural Studio 2026</title>
+    <title>VOXER PRO | Studio Level AI</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/wavesurfer.js@7"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-        
-        :root { --primary: #000; --secondary: #64748b; --bg: #f8fafc; --border: #e2e8f0; }
-        body { background: var(--bg); font-family: 'Plus Jakarta Sans', sans-serif; color: var(--primary); margin: 0; padding-bottom: 50px; }
-
-        /* Navbar */
-        .navbar { background: #fff; border-bottom: 1px solid var(--border); padding: 15px 5%; position: sticky; top: 0; z-index: 1000; }
-        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: -1px; text-decoration: none; color: #000; }
-
-        /* Stats Section */
-        .stat-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 15px; text-align:center; }
-        .stat-lab { font-size: 0.65rem; font-weight: 800; color: var(--secondary); text-transform: uppercase; margin-bottom: 5px; }
-        .stat-val { font-size: 1.2rem; font-weight: 800; color: #000; }
-
-        /* Voice Selection Grid */
-        .voice-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .voice-pill { 
-            background: #fff; border: 1px solid var(--border); padding: 15px; 
-            border-radius: 14px; cursor: pointer; font-weight: 700; font-size: 0.95rem; 
-            transition: 0.2s; text-align: center; color: var(--secondary);
-        }
-        .voice-pill:hover { border-color: #000; color: #000; }
-        .voice-pill.active { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-
-        /* Studio Input */
-        .studio-card { background: #fff; border-radius: 24px; border: 1px solid var(--border); padding: 30px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.04); position: relative; }
-        .studio-textarea { width: 100%; border: none; font-size: 1.3rem; min-height: 200px; outline: none; resize: none; font-weight: 500; background: transparent; }
-
-        #emotionBadge { position: absolute; top: 20px; right: 30px; font-size: 0.7rem; font-weight: 800; padding: 4px 10px; border-radius: 20px; background: #f1f5f9; color: var(--secondary); display: none; }
-
-        /* Button Progress */
-        .gen-wrapper { position: relative; width: 100%; height: 65px; border: 2px solid var(--primary); border-radius: 14px; overflow: hidden; cursor: pointer; margin-top: 20px; }
-        .fill-progress { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: var(--primary); transition: width 0.1s linear; }
-        .btn-label { position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; z-index: 5; transition: 0.3s; color: var(--primary); letter-spacing: 0.5px; }
-        .loading .btn-label { color: #fff; mix-blend-mode: difference; }
-
-        /* Popup Styles */
-        .gender-nav { display: flex; justify-content: center; gap: 8px; margin-bottom: 18px; background: #f1f5f9; padding: 6px; border-radius: 12px; }
-        .gender-btn { flex: 1; border: none; background: transparent; padding: 10px; border-radius: 9px; font-weight: 700; font-size: 0.85rem; color: var(--secondary); }
-        .gender-btn.active { background: #fff; color: #000; box-shadow: 0 2px 5px rgba(0,0,0,0.06); }
-
-        .wf-row { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 15px; margin-bottom: 15px; border-left: 5px solid #000; }
-        .play-trigger { background: var(--primary); color: #fff; border: none; border-radius: 50%; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; }
-        
-        .feed-box { background: #fff; border: 1px solid var(--border); border-radius: 20px; height: 280px; overflow: hidden; }
-        .feed-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid #f1f5f9; }
-        .user-av { width: 35px; height: 35px; border-radius: 10px; background: #eee; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
+        :root { --primary: #000; --bg: #fdfdfd; }
+        body { background: var(--bg); font-family: 'Plus Jakarta Sans', sans-serif; }
+        .studio-card { border-radius: 30px; border: 2px solid #000; padding: 40px; background: #fff; box-shadow: 20px 20px 0px #000; }
+        .voice-pill { border: 2px solid #eee; padding: 15px; border-radius: 15px; cursor: pointer; font-weight: 700; transition: 0.3s; text-align: center; }
+        .voice-pill.active { background: #000; color: #fff; border-color: #000; }
+        .gen-btn { background: #000; color: #fff; padding: 20px; border-radius: 15px; font-weight: 800; width: 100%; border: none; margin-top: 20px; font-size: 1.2rem; }
+        .wf-row { background: #f9f9f9; border-radius: 20px; padding: 20px; margin-bottom: 15px; }
     </style>
 </head>
-<body>
+<body class="p-4">
 
-<nav class="navbar mb-4">
-    <div class="container-fluid px-md-5">
-        <a href="#" class="logo">VOXER <span style="font-weight:400; color:var(--secondary);">PRO</span></a>
-        <div class="badge bg-dark rounded-pill px-3 py-2 small">CRYSTAL HD ENGINE</div>
+<div class="container" style="max-width: 700px;">
+    <div class="text-center mb-5">
+        <h1 class="fw-800" style="font-weight: 900; letter-spacing: -2px;">NEURAL STUDIO</h1>
+        <p class="text-muted">ElevenLabs Grade Voice Generation</p>
     </div>
-</nav>
 
-<div class="container" style="max-width: 850px;">
     <div class="row g-3 mb-4">
-        <div class="col-4"><div class="stat-card"><div class="stat-lab">Network Status</div><div class="stat-val text-success">Stable</div></div></div>
-        <div class="col-4"><div class="stat-card"><div class="stat-lab">Neural Latency</div><div class="stat-val">12ms</div></div></div>
-        <div class="col-4"><div class="stat-card"><div class="stat-lab">Audio Output</div><div class="stat-val">HD MP3</div></div></div>
-    </div>
-
-    <h6 class="fw-bold small text-muted mb-3">SELECT NEURAL MODEL</h6>
-    <div class="voice-container">
-        <div class="voice-pill active" onclick="setLang(this)">🇺🇸 English Neural (US)</div>
-        <div class="voice-pill" onclick="setLang(this)">🇮🇳 Hindi / Urdu (Neural)</div>
-    </div>
-
-    <div class="studio-card mb-5">
-        <div id="emotionBadge">DETECTING TONE...</div>
-        <textarea id="scriptInput" class="studio-textarea" placeholder="Paste your script here... Hindi/Urdu support is optimized!"></textarea>
-        
-        <div class="gen-wrapper" id="mainBtn" onclick="generateAudio()">
-            <div class="fill-progress" id="progressBar"></div>
-            <div class="btn-label" id="btnLabel">GENERATE 6 CRYSTAL SAMPLES</div>
+        <div class="col-6">
+            <div id="btn-en" class="voice-pill active" onclick="setLang('English')">🇺🇸 ENGLISH</div>
+        </div>
+        <div class="col-6">
+            <div id="btn-hi" class="voice-pill" onclick="setLang('Hindi')">🇮🇳 HINDI / URDU</div>
         </div>
     </div>
 
-    <h6 class="fw-bold text-muted mb-3" style="font-size:0.75rem;">LIVE PRODUCTION FEED</h6>
-    <div class="feed-box" id="feedList"></div>
+    <div class="studio-card">
+        <textarea id="scriptInput" class="form-control border-0 fs-4" style="min-height: 150px; outline: none; box-shadow: none;" placeholder="Enter script..."></textarea>
+        <button id="mainBtn" class="gen-btn" onclick="generate()">GENERATE STUDIO VOICE</button>
+    </div>
 </div>
 
 <script>
-    let globalMale = [];
-    let globalFemale = [];
-    let waves = [];
+    let currentLang = "English";
+    let globalMale = [], globalFemale = [];
 
-    function setLang(el) {
-        document.querySelectorAll('.voice-pill').forEach(v => v.classList.remove('active'));
-        el.classList.add('active');
+    function setLang(l) {
+        currentLang = l;
+        document.getElementById('btn-en').classList.toggle('active', l === 'English');
+        document.getElementById('btn-hi').classList.toggle('active', l === 'Hindi');
     }
 
-    // Emotion Tagging Logic
-    document.getElementById('scriptInput').oninput = function() {
-        const val = this.value.toLowerCase();
-        const badge = document.getElementById('emotionBadge');
-        if(val.length < 5) { badge.style.display = 'none'; return; }
-        badge.style.display = 'block';
-        if(val.includes('happy') || val.includes('khush') || val.includes('mubarak')) {
-            badge.innerText = '😊 JOYFUL TONE'; badge.style.color = '#10b981';
-        } else if(val.includes('sad') || val.includes('dukh') || val.includes('sorry')) {
-            badge.innerText = '😔 NARRATIVE TONE'; badge.style.color = '#3b82f6';
-        } else {
-            badge.innerText = '🎙️ PROFESSIONAL TONE'; badge.style.color = '#64748b';
-        }
-    };
-
-    async function generateAudio() {
+    async function generate() {
         const text = document.getElementById('scriptInput').value.trim();
-        const langRaw = document.querySelector('.voice-pill.active').innerText;
-        const lang = langRaw.includes('Hindi') ? 'Hindi' : 'English';
-        
-        const bar = document.getElementById('progressBar');
+        if(!text) return Swal.fire('Error', 'Empty Text', 'error');
+
         const btn = document.getElementById('mainBtn');
-        const label = document.getElementById('btnLabel');
-
-        if(!text) return Swal.fire('Wait!', 'Please enter some text first.', 'warning');
-
-        btn.classList.add('loading');
-        btn.style.pointerEvents = 'none';
-        
-        let p = 0;
-        const timer = setInterval(() => {
-            if(p < 95) { p += (Math.random() * 10); if(p > 95) p = 95; bar.style.width = p + '%'; label.innerText = 'PROCESSING NEURAL LAYERS ' + Math.round(p) + '%'; }
-        }, 150);
+        btn.innerText = "ENGINEERING VOICE...";
+        btn.disabled = true;
 
         try {
             const res = await fetch('/api/generate', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({text: text, voice_group: lang})
+                body: JSON.stringify({text: text, voice_group: currentLang})
             });
-            
             const data = await res.json();
-            if (data.error) throw new Error(data.error);
-
-            clearInterval(timer);
-            bar.style.width = '100%'; 
-            label.innerText = 'SAMPLES GENERATED!';
-
+            
             globalMale = data.male_samples;
             globalFemale = data.female_samples;
-
-            setTimeout(() => {
-                renderPopup('male'); 
-                resetUI();
-            }, 600);
-        } catch(e) { 
-            clearInterval(timer); 
-            resetUI();
-            Swal.fire('Error', 'Neural Engine connection failed. Check your index.py code.', 'error');
+            
+            showOutput();
+        } catch(e) {
+            Swal.fire('Error', 'Server Timeout', 'error');
+        } finally {
+            btn.innerText = "GENERATE STUDIO VOICE";
+            btn.disabled = false;
         }
     }
 
-    function renderPopup(gender) {
-        const samples = (gender === 'male') ? globalMale : globalFemale;
-        let html = `
-        <div class="gender-nav">
-            <button class="gender-btn ${gender==='male'?'active':''}" onclick="renderPopup('male')"><i class="fa-solid fa-mars"></i> Male Samples</button>
-            <button class="gender-btn ${gender==='female'?'active':''}" onclick="renderPopup('female')"><i class="fa-solid fa-venus"></i> Female Samples</button>
-        </div>
-        <div id="popup-content" style="max-height:480px; overflow-y:auto; padding:5px;">`;
-        
-        samples.forEach((s, idx) => {
+    function showOutput() {
+        let html = `<div class="p-2 text-start">`;
+        [...globalMale, ...globalFemale].forEach((s, i) => {
             html += `
             <div class="wf-row">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div>
-                        <div class="fw-bold" style="font-size:1rem;">${s.style}</div>
-                        <div class="text-muted small">Crystal Clear HD • 48kHz</div>
-                    </div>
-                    <a href="${s.url}" download class="btn btn-dark btn-sm rounded-pill shadow-sm"><i class="fa-solid fa-download"></i> Download</a>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="badge bg-dark">${s.style}</span>
+                    <a href="${s.url}" download class="text-dark"><i class="fa-solid fa-download"></i></a>
                 </div>
-                <div class="d-flex align-items-center gap-3">
-                    <button class="play-trigger" onclick="togglePlay(${idx})"><i class="fa-solid fa-play" id="icon-${idx}"></i></button>
-                    <div id="wf-${idx}" style="flex:1;"></div>
-                    <audio id="aud-${idx}" src="${s.url}" style="display:none;"></audio>
-                </div>
+                <audio controls class="w-100"><source src="${s.url}" type="audio/mpeg"></audio>
             </div>`;
         });
         html += `</div>`;
 
         Swal.fire({
-            title: '<span style="font-weight:800; font-size:1.2rem;">SELECT YOUR VERSION</span>',
+            title: 'STUDIO OUTPUT',
             html: html,
             showConfirmButton: false,
-            width: '520px',
-            background: '#f8fafc',
-            didOpen: () => { initWaves(samples); }
+            width: '500px'
         });
     }
-
-    function initWaves(samples) {
-        waves = [];
-        samples.forEach((s, i) => {
-            const container = document.getElementById(`wf-${i}`);
-            if(!container) return;
-            const ws = WaveSurfer.create({ 
-                container: container, 
-                waveColor: '#d1d5db', 
-                progressColor: '#000', 
-                height: 40,
-                barWidth: 2,
-                barRadius: 4,
-                responsive: true
-            });
-            ws.load(s.url);
-            waves[i] = ws;
-            const aud = document.getElementById(`aud-${i}`);
-            aud.onplay = () => { document.getElementById(`icon-${i}`).className="fa-solid fa-pause"; waves[i].play(); }
-            aud.onpause = () => { document.getElementById(`icon-${i}`).className="fa-solid fa-play"; waves[i].pause(); }
-            ws.on('finish', () => { document.getElementById(`icon-${i}`).className="fa-solid fa-play"; });
-        });
-    }
-
-    function togglePlay(i) {
-        const aud = document.getElementById(`aud-${i}`);
-        if(aud.paused) {
-            // Stop other playing audios
-            document.querySelectorAll('audio').forEach(a => a.pause());
-            aud.play();
-        } else {
-            aud.pause();
-        }
-    }
-
-    function resetUI() {
-        document.getElementById('mainBtn').classList.remove('loading');
-        document.getElementById('mainBtn').style.pointerEvents = 'auto';
-        document.getElementById('progressBar').style.width = '0%';
-        document.getElementById('btnLabel').innerText = 'GENERATE 6 CRYSTAL SAMPLES';
-    }
-
-    // Live Feed
-    const unames = ["Arsalan", "Zain M.", "Sarah", "Ali", "Mehak", "Hamza", "Danish", "Priya"];
-    function addFeed() {
-        const list = document.getElementById('feedList');
-        if(!list) return;
-        const item = document.createElement('div');
-        item.className = 'feed-item';
-        item.innerHTML = `<img src="https://i.pravatar.cc/100?u=${Math.random()}" class="user-av"><div><div class="fw-bold small">${unames[Math.floor(Math.random()*unames.length)]}</div><div class="text-muted" style="font-size:0.7rem;">Generated HD Neural Voice</div></div>`;
-        list.prepend(item);
-        if(list.children.length > 5) list.removeChild(list.lastChild);
-    }
-    setInterval(addFeed, 4000);
-    window.onload = () => { for(let i=0; i<4; i++) setTimeout(addFeed, i*500); };
 </script>
 </body>
 </html>
