@@ -14,13 +14,16 @@
         :root { --primary: #000; --secondary: #64748b; --bg: #f8fafc; --border: #e2e8f0; }
         body { background: var(--bg); font-family: 'Plus Jakarta Sans', sans-serif; color: var(--primary); margin: 0; padding-bottom: 50px; }
 
+        /* Navbar */
         .navbar { background: #fff; border-bottom: 1px solid var(--border); padding: 15px 5%; position: sticky; top: 0; z-index: 1000; }
         .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: -1px; text-decoration: none; color: #000; }
 
-        .stat-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 15px; text-align:center; min-height: 90px; }
+        /* Stats Section */
+        .stat-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 15px; text-align:center; }
         .stat-lab { font-size: 0.65rem; font-weight: 800; color: var(--secondary); text-transform: uppercase; margin-bottom: 5px; }
-        .stat-val { font-size: 1.4rem; font-weight: 800; color: #000; }
+        .stat-val { font-size: 1.2rem; font-weight: 800; color: #000; }
 
+        /* Voice Selection Grid */
         .voice-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
         .voice-pill { 
             background: #fff; border: 1px solid var(--border); padding: 15px; 
@@ -30,28 +33,29 @@
         .voice-pill:hover { border-color: #000; color: #000; }
         .voice-pill.active { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
 
+        /* Studio Input */
         .studio-card { background: #fff; border-radius: 24px; border: 1px solid var(--border); padding: 30px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.04); position: relative; }
         .studio-textarea { width: 100%; border: none; font-size: 1.3rem; min-height: 200px; outline: none; resize: none; font-weight: 500; background: transparent; }
 
         #emotionBadge { position: absolute; top: 20px; right: 30px; font-size: 0.7rem; font-weight: 800; padding: 4px 10px; border-radius: 20px; background: #f1f5f9; color: var(--secondary); display: none; }
 
+        /* Button Progress */
         .gen-wrapper { position: relative; width: 100%; height: 65px; border: 2px solid var(--primary); border-radius: 14px; overflow: hidden; cursor: pointer; margin-top: 20px; }
         .fill-progress { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: var(--primary); transition: width 0.1s linear; }
         .btn-label { position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; z-index: 5; transition: 0.3s; color: var(--primary); letter-spacing: 0.5px; }
         .loading .btn-label { color: #fff; mix-blend-mode: difference; }
 
+        /* Popup Styles */
         .gender-nav { display: flex; justify-content: center; gap: 8px; margin-bottom: 18px; background: #f1f5f9; padding: 6px; border-radius: 12px; }
-        .gender-btn { flex: 1; border: none; background: transparent; padding: 10px; border-radius: 9px; font-weight: 700; font-size: 0.85rem; transition: 0.2s; color: var(--secondary); display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .gender-btn { flex: 1; border: none; background: transparent; padding: 10px; border-radius: 9px; font-weight: 700; font-size: 0.85rem; color: var(--secondary); }
         .gender-btn.active { background: #fff; color: #000; box-shadow: 0 2px 5px rgba(0,0,0,0.06); }
 
-        .wf-row { background: #f8fafc; border: 1px solid var(--border); border-radius: 14px; padding: 15px; margin-bottom: 12px; }
-        .play-trigger { background: var(--primary); color: #fff; border: none; border-radius: 10px; width: 38px; height: 38px; flex-shrink: 0; }
+        .wf-row { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 15px; margin-bottom: 15px; border-left: 5px solid #000; }
+        .play-trigger { background: var(--primary); color: #fff; border: none; border-radius: 50%; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; }
         
-        .feed-box { background: #fff; border: 1px solid var(--border); border-radius: 20px; height: 320px; overflow: hidden; }
-        .feed-item { display: flex; align-items: center; gap: 12px; padding: 15px 20px; border-bottom: 1px solid #f1f5f9; animation: flashIn 0.4s ease-out; }
-        .user-av { width: 42px; height: 42px; border-radius: 12px; background: #eee; }
-
-        @keyframes flashIn { 0% { opacity: 0; transform: translateY(-8px); } 100% { opacity: 1; transform: translateY(0); } }
+        .feed-box { background: #fff; border: 1px solid var(--border); border-radius: 20px; height: 280px; overflow: hidden; }
+        .feed-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid #f1f5f9; }
+        .user-av { width: 35px; height: 35px; border-radius: 10px; background: #eee; }
     </style>
 </head>
 <body>
@@ -59,29 +63,30 @@
 <nav class="navbar mb-4">
     <div class="container-fluid px-md-5">
         <a href="#" class="logo">VOXER <span style="font-weight:400; color:var(--secondary);">PRO</span></a>
-        <div class="badge bg-dark rounded-pill px-3 py-2 small">NEURAL ENGINE 2026</div>
+        <div class="badge bg-dark rounded-pill px-3 py-2 small">CRYSTAL HD ENGINE</div>
     </div>
 </nav>
 
-<div class="container" style="max-width: 800px;">
+<div class="container" style="max-width: 850px;">
     <div class="row g-3 mb-4">
-        <div class="col-4"><div class="stat-card"><div class="stat-lab">Online Users</div><div class="stat-val">1,240</div></div></div>
-        <div class="col-4"><div class="stat-card"><div class="stat-lab">Neural Cycles</div><div class="stat-val">85K+</div></div></div>
-        <div class="col-4"><div class="stat-card"><div class="stat-lab">Server Status</div><div class="stat-val text-success">Active</div></div></div>
+        <div class="col-4"><div class="stat-card"><div class="stat-lab">Network Status</div><div class="stat-val text-success">Stable</div></div></div>
+        <div class="col-4"><div class="stat-card"><div class="stat-lab">Neural Latency</div><div class="stat-val">12ms</div></div></div>
+        <div class="col-4"><div class="stat-card"><div class="stat-lab">Audio Output</div><div class="stat-val">HD MP3</div></div></div>
     </div>
 
-    <h6 class="fw-bold small text-muted mb-3">LANGUAGE MODEL</h6>
+    <h6 class="fw-bold small text-muted mb-3">SELECT NEURAL MODEL</h6>
     <div class="voice-container">
-        <div class="voice-pill active" onclick="setLang(this)">🇺🇸 English Neural</div>
-        <div class="voice-pill" onclick="setLang(this)">🇮🇳 Hindi / Urdu</div>
+        <div class="voice-pill active" onclick="setLang(this)">🇺🇸 English Neural (US)</div>
+        <div class="voice-pill" onclick="setLang(this)">🇮🇳 Hindi / Urdu (Neural)</div>
     </div>
 
     <div class="studio-card mb-5">
         <div id="emotionBadge">DETECTING TONE...</div>
-        <textarea id="scriptInput" class="studio-textarea" placeholder="Type your script here... Hindi/Urdu support is active!"></textarea>
+        <textarea id="scriptInput" class="studio-textarea" placeholder="Paste your script here... Hindi/Urdu support is optimized!"></textarea>
+        
         <div class="gen-wrapper" id="mainBtn" onclick="generateAudio()">
             <div class="fill-progress" id="progressBar"></div>
-            <div class="btn-label" id="btnLabel">GENERATE CLEAR VOICE</div>
+            <div class="btn-label" id="btnLabel">GENERATE 6 CRYSTAL SAMPLES</div>
         </div>
     </div>
 
@@ -94,62 +99,58 @@
     let globalFemale = [];
     let waves = [];
 
-    // Language Toggle
     function setLang(el) {
         document.querySelectorAll('.voice-pill').forEach(v => v.classList.remove('active'));
         el.classList.add('active');
     }
 
-    // Emotion Detection
+    // Emotion Tagging Logic
     document.getElementById('scriptInput').oninput = function() {
         const val = this.value.toLowerCase();
         const badge = document.getElementById('emotionBadge');
         if(val.length < 5) { badge.style.display = 'none'; return; }
         badge.style.display = 'block';
-        if(val.includes('happy') || val.includes('khush')) {
-            badge.innerText = '😊 HAPPY TONE'; badge.style.color = '#10b981';
-        } else if(val.includes('sad') || val.includes('dukh')) {
-            badge.innerText = '😔 SAD TONE'; badge.style.color = '#3b82f6';
+        if(val.includes('happy') || val.includes('khush') || val.includes('mubarak')) {
+            badge.innerText = '😊 JOYFUL TONE'; badge.style.color = '#10b981';
+        } else if(val.includes('sad') || val.includes('dukh') || val.includes('sorry')) {
+            badge.innerText = '😔 NARRATIVE TONE'; badge.style.color = '#3b82f6';
         } else {
-            badge.innerText = '🎙️ NATURAL TONE'; badge.style.color = '#64748b';
+            badge.innerText = '🎙️ PROFESSIONAL TONE'; badge.style.color = '#64748b';
         }
     };
 
-    // Main API Call
     async function generateAudio() {
         const text = document.getElementById('scriptInput').value.trim();
         const langRaw = document.querySelector('.voice-pill.active').innerText;
-        // Fix: Detect Language properly
         const lang = langRaw.includes('Hindi') ? 'Hindi' : 'English';
         
         const bar = document.getElementById('progressBar');
         const btn = document.getElementById('mainBtn');
         const label = document.getElementById('btnLabel');
 
-        if(!text) return Swal.fire('Error', 'Script is empty!', 'error');
+        if(!text) return Swal.fire('Wait!', 'Please enter some text first.', 'warning');
 
         btn.classList.add('loading');
         btn.style.pointerEvents = 'none';
         
         let p = 0;
         const timer = setInterval(() => {
-            if(p < 90) { p += 5; bar.style.width = p + '%'; label.innerText = 'GENERATING ' + p + '%'; }
-        }, 200);
+            if(p < 95) { p += (Math.random() * 10); if(p > 95) p = 95; bar.style.width = p + '%'; label.innerText = 'PROCESSING NEURAL LAYERS ' + Math.round(p) + '%'; }
+        }, 150);
 
         try {
-            // FIXED PATH FOR VERCEL
             const res = await fetch('/api/generate', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({text: text, voice_group: lang})
             });
             
-            if (!res.ok) throw new Error('Backend Error');
             const data = await res.json();
-            
+            if (data.error) throw new Error(data.error);
+
             clearInterval(timer);
             bar.style.width = '100%'; 
-            label.innerText = 'SUCCESSFUL';
+            label.innerText = 'SAMPLES GENERATED!';
 
             globalMale = data.male_samples;
             globalFemale = data.female_samples;
@@ -157,11 +158,11 @@
             setTimeout(() => {
                 renderPopup('male'); 
                 resetUI();
-            }, 500);
+            }, 600);
         } catch(e) { 
             clearInterval(timer); 
             resetUI();
-            Swal.fire('Connection Error', 'Neural Engine connection failed. Please ensure index.py is correct.', 'error');
+            Swal.fire('Error', 'Neural Engine connection failed. Check your index.py code.', 'error');
         }
     }
 
@@ -169,19 +170,22 @@
         const samples = (gender === 'male') ? globalMale : globalFemale;
         let html = `
         <div class="gender-nav">
-            <button class="gender-btn ${gender==='male'?'active':''}" onclick="renderPopup('male')">Male</button>
-            <button class="gender-btn ${gender==='female'?'active':''}" onclick="renderPopup('female')">Female</button>
+            <button class="gender-btn ${gender==='male'?'active':''}" onclick="renderPopup('male')"><i class="fa-solid fa-mars"></i> Male Samples</button>
+            <button class="gender-btn ${gender==='female'?'active':''}" onclick="renderPopup('female')"><i class="fa-solid fa-venus"></i> Female Samples</button>
         </div>
-        <div id="popup-content" style="max-height:400px; overflow-y:auto;">`;
+        <div id="popup-content" style="max-height:480px; overflow-y:auto; padding:5px;">`;
         
         samples.forEach((s, idx) => {
             html += `
             <div class="wf-row">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <div class="fw-bold">${s.style}</div>
-                    <a href="${s.url}" download class="btn btn-dark btn-sm rounded-pill"><i class="fa-solid fa-download"></i></a>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <div class="fw-bold" style="font-size:1rem;">${s.style}</div>
+                        <div class="text-muted small">Crystal Clear HD • 48kHz</div>
+                    </div>
+                    <a href="${s.url}" download class="btn btn-dark btn-sm rounded-pill shadow-sm"><i class="fa-solid fa-download"></i> Download</a>
                 </div>
-                <div class="d-flex align-items-center gap-2">
+                <div class="d-flex align-items-center gap-3">
                     <button class="play-trigger" onclick="togglePlay(${idx})"><i class="fa-solid fa-play" id="icon-${idx}"></i></button>
                     <div id="wf-${idx}" style="flex:1;"></div>
                     <audio id="aud-${idx}" src="${s.url}" style="display:none;"></audio>
@@ -191,10 +195,11 @@
         html += `</div>`;
 
         Swal.fire({
-            title: '<span style="font-weight:800;">NEURAL AUDIO SAMPLES</span>',
+            title: '<span style="font-weight:800; font-size:1.2rem;">SELECT YOUR VERSION</span>',
             html: html,
             showConfirmButton: false,
-            width: '450px',
+            width: '520px',
+            background: '#f8fafc',
             didOpen: () => { initWaves(samples); }
         });
     }
@@ -210,7 +215,8 @@
                 progressColor: '#000', 
                 height: 40,
                 barWidth: 2,
-                barRadius: 4
+                barRadius: 4,
+                responsive: true
             });
             ws.load(s.url);
             waves[i] = ws;
@@ -223,29 +229,35 @@
 
     function togglePlay(i) {
         const aud = document.getElementById(`aud-${i}`);
-        aud.paused ? aud.play() : aud.pause();
+        if(aud.paused) {
+            // Stop other playing audios
+            document.querySelectorAll('audio').forEach(a => a.pause());
+            aud.play();
+        } else {
+            aud.pause();
+        }
     }
 
     function resetUI() {
         document.getElementById('mainBtn').classList.remove('loading');
         document.getElementById('mainBtn').style.pointerEvents = 'auto';
         document.getElementById('progressBar').style.width = '0%';
-        document.getElementById('btnLabel').innerText = 'GENERATE CLEAR VOICE';
+        document.getElementById('btnLabel').innerText = 'GENERATE 6 CRYSTAL SAMPLES';
     }
 
-    // Mock Live Feed
-    const unames = ["Arsalan", "Zain M.", "Sarah", "Ali", "Mehak", "Hamza"];
+    // Live Feed
+    const unames = ["Arsalan", "Zain M.", "Sarah", "Ali", "Mehak", "Hamza", "Danish", "Priya"];
     function addFeed() {
         const list = document.getElementById('feedList');
         if(!list) return;
         const item = document.createElement('div');
         item.className = 'feed-item';
-        item.innerHTML = `<img src="https://i.pravatar.cc/100?u=${Math.random()}" class="user-av"><div><div class="fw-bold">${unames[Math.floor(Math.random()*unames.length)]}</div><div class="text-muted small">Generated Neutral Audio</div></div>`;
+        item.innerHTML = `<img src="https://i.pravatar.cc/100?u=${Math.random()}" class="user-av"><div><div class="fw-bold small">${unames[Math.floor(Math.random()*unames.length)]}</div><div class="text-muted" style="font-size:0.7rem;">Generated HD Neural Voice</div></div>`;
         list.prepend(item);
         if(list.children.length > 5) list.removeChild(list.lastChild);
     }
-    setInterval(addFeed, 5000);
-    window.onload = () => { for(let i=0; i<3; i++) addFeed(); };
+    setInterval(addFeed, 4000);
+    window.onload = () => { for(let i=0; i<4; i++) setTimeout(addFeed, i*500); };
 </script>
 </body>
 </html>
