@@ -12,45 +12,122 @@
         
         :root { --glow: #00ff88; --bg: #08090a; --card: #111216; }
         
-        /* Scroll Khatam karne ke liye */
-        html, body { height: 100%; overflow: hidden; background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; }
+        /* Responsive body setup */
+        html, body { 
+            min-height: 100%; 
+            background: var(--bg); 
+            color: #fff; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            margin: 0;
+            padding: 0;
+        }
 
         .main-wrapper { 
-            height: 100vh; display: flex; align-items: center; justify-content: center; 
-            padding: 20px; background: radial-gradient(circle at top right, #1a1c20, #08090a);
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 15px; 
+            background: radial-gradient(circle at top right, #1a1c20, #08090a);
         }
 
         .studio-card { 
-            background: var(--card); border: 1px solid #222; border-radius: 35px; 
-            padding: 40px; width: 100%; max-width: 750px; position: relative;
+            background: var(--card); 
+            border: 1px solid #222; 
+            border-radius: 30px; 
+            padding: 30px; 
+            width: 100%; 
+            max-width: 750px; 
+            position: relative;
             box-shadow: 0 40px 100px rgba(0,0,0,0.6);
         }
 
-        .neural-title { font-weight: 800; font-size: 2.2rem; color: var(--glow); letter-spacing: -1.5px; margin-bottom: 5px; }
+        .neural-title { 
+            font-weight: 800; 
+            font-size: clamp(1.5rem, 5vw, 2.2rem); 
+            color: var(--glow); 
+            letter-spacing: -1.5px; 
+            margin-bottom: 5px; 
+        }
         
-        .toggle-container { background: #000; padding: 6px; border-radius: 20px; display: flex; gap: 5px; border: 1px solid #333; }
-        .t-btn { flex: 1; border: none; background: transparent; color: #666; padding: 12px; border-radius: 15px; font-weight: 700; font-size: 0.85rem; transition: 0.3s; }
-        .t-btn.active { background: #fff; color: #000; box-shadow: 0 5px 15px rgba(255,255,255,0.1); }
+        .toggle-container { 
+            background: #000; 
+            padding: 5px; 
+            border-radius: 18px; 
+            display: flex; 
+            gap: 5px; 
+            border: 1px solid #333; 
+        }
 
-        .input-zone { margin-top: 30px; position: relative; }
+        .t-btn { 
+            flex: 1; 
+            border: none; 
+            background: transparent; 
+            color: #666; 
+            padding: 10px 5px; 
+            border-radius: 12px; 
+            font-weight: 700; 
+            font-size: 0.8rem; 
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+
+        .t-btn.active { 
+            background: #fff; 
+            color: #000; 
+            box-shadow: 0 5px 15px rgba(255,255,255,0.1); 
+        }
+
+        .input-zone { margin-top: 25px; position: relative; }
+        
         .script-input { 
-            background: transparent; border: none; color: #fff; font-size: 1.3rem; 
-            height: 180px; width: 100%; outline: none; resize: none;
-            line-height: 1.5; border-bottom: 1px solid #333;
+            background: transparent; 
+            border: none; 
+            color: #fff; 
+            font-size: 1.1rem; 
+            height: 150px; 
+            width: 100%; 
+            outline: none; 
+            resize: none;
+            line-height: 1.5; 
+            border-bottom: 1px solid #333;
         }
 
         .gen-btn { 
-            background: var(--glow); color: #000; width: 100%; padding: 20px; 
-            border-radius: 18px; font-weight: 800; border: none; font-size: 1.1rem;
-            margin-top: 25px; transition: 0.4s;
+            background: var(--glow); 
+            color: #000; 
+            width: 100%; 
+            padding: 18px; 
+            border-radius: 15px; 
+            font-weight: 800; 
+            border: none; 
+            font-size: 1rem;
+            margin-top: 20px; 
+            transition: 0.4s;
         }
-        .gen-btn:hover { transform: scale(1.02); box-shadow: 0 0 40px rgba(0,255,136,0.3); }
 
-        /* Compact Result Area */
+        .gen-btn:hover { transform: scale(1.01); box-shadow: 0 0 30px rgba(0,255,136,0.2); }
+
+        /* Compact Result Area - Responsive */
         .result-overlay { 
-            background: #1a1c22; border-radius: 20px; padding: 15px 25px; 
-            margin-top: 20px; display: none; align-items: center; gap: 15px;
+            background: #1a1c22; 
+            border-radius: 15px; 
+            padding: 12px 20px; 
+            margin-top: 20px; 
+            display: none; 
+            align-items: center; 
+            gap: 12px;
             border: 1px solid var(--glow);
+            flex-wrap: wrap; /* Takay choti screen pe elements niche aa sakein */
+        }
+
+        /* Responsive Media Queries */
+        @media (max-width: 576px) {
+            .studio-card { padding: 20px; border-radius: 25px; }
+            .t-btn { font-size: 0.75rem; padding: 8px 4px; }
+            .script-input { font-size: 1rem; height: 120px; }
+            .gen-btn { padding: 15px; font-size: 0.9rem; }
+            .result-overlay { justify-content: center; }
         }
     </style>
 </head>
@@ -63,7 +140,7 @@
             <p class="text-muted small">Crystal Clear AI Voice Machine</p>
         </div>
 
-        <div class="row g-3">
+        <div class="row g-2 g-md-3">
             <div class="col-6">
                 <div class="toggle-container" id="lGrp">
                     <button class="t-btn active" onclick="sw(this, 'lGrp')" data-v="English">English</button>
@@ -85,10 +162,10 @@
         <button id="mainBtn" class="gen-btn" onclick="run()">GENERATE CRYSTAL VOICE</button>
 
         <div id="resBox" class="result-overlay">
-            <div class="flex-grow-1">
-                <audio id="aud" controls class="w-100" style="filter: invert(1); height: 40px;"></audio>
+            <div class="flex-grow-1" style="min-width: 200px;">
+                <audio id="aud" controls class="w-100" style="filter: invert(1); height: 35px;"></audio>
             </div>
-            <a id="dl" href="#" download class="btn btn-light btn-sm rounded-circle" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+            <a id="dl" href="#" download class="btn btn-light btn-sm rounded-circle" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
                 <i class="fa-solid fa-download"></i>
             </a>
         </div>
