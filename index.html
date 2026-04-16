@@ -3,27 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEURAL STUDIO | Next-Gen AI</title>
+    <title>NEURAL STUDIO PRO | Next-Gen AI</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
         
         :root { 
             --glow: #00ff88; 
-            --bg: #08090a; 
-            --card: #111216; 
+            --accent: #7000ff;
+            --bg: #050608; 
+            --card: rgba(17, 18, 22, 0.85); 
             --text: #ffffff;
-            --input-bg: rgba(255,255,255,0.03);
+            --input-bg: rgba(255, 255, 255, 0.04);
+            --border: rgba(255, 255, 255, 0.1);
         }
 
-        /* Light Mode Variables */
+        /* Premium Light Mode */
         body.light-mode {
-            --bg: #f4f7f6;
-            --card: #ffffff;
-            --text: #1a1a1a;
-            --glow: #00bd65;
-            --input-bg: #f9f9f9;
+            --bg: #f0f4f8;
+            --card: rgba(255, 255, 255, 0.9);
+            --text: #0f172a;
+            --glow: #059669;
+            --accent: #6366f1;
+            --input-bg: #f8fafc;
+            --border: rgba(0, 0, 0, 0.08);
         }
         
         html, body { 
@@ -31,8 +37,31 @@
             background: var(--bg); 
             color: var(--text); 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            margin: 0; padding: 0;
+            transition: background 0.5s ease, color 0.5s ease;
+            overflow-x: hidden;
+            margin: 0;
+        }
+
+        /* Animated Ambient Background */
+        .ambient-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.12) 0%, transparent 70%);
+            filter: blur(80px);
+            animation: move 25s infinite alternate;
+        }
+
+        @keyframes move { 
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(100px, 200px); } 
         }
 
         .main-wrapper { 
@@ -40,327 +69,259 @@
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            padding: 15px; 
-            background: radial-gradient(circle at top right, rgba(0,255,136,0.08), transparent);
+            padding: 20px;
         }
 
+        /* Pro Glass Card */
         .studio-card { 
             background: var(--card); 
-            border: 1px solid rgba(128,128,128,0.1); 
-            border-radius: 35px; 
-            padding: 35px; 
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--border); 
+            border-radius: 40px; 
+            padding: clamp(20px, 5vw, 45px); 
             width: 100%; 
-            max-width: 700px; 
+            max-width: 800px; 
+            box-shadow: 0 50px 100px rgba(0,0,0,0.4);
             position: relative;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.3);
         }
 
-        /* Premium Theme Toggle */
+        /* Theme Switcher */
         .theme-switch {
-            position: absolute;
-            top: 25px;
-            right: 25px;
-            cursor: pointer;
-            width: 45px;
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
+            position: absolute; top: 30px; right: 30px;
+            cursor: pointer; width: 48px; height: 48px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; background: var(--input-bg);
+            border: 1px solid var(--border); transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .theme-switch:hover { transform: scale(1.1) rotate(15deg); background: var(--glow); color: #000; }
+
+        .header-title { 
+            font-weight: 800; font-size: clamp(1.8rem, 5vw, 2.8rem); 
+            background: linear-gradient(90deg, var(--glow), var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: -2px; margin-bottom: 5px;
+        }
+
+        /* Advanced Input Layer */
+        .input-container {
+            margin-top: 30px;
+            position: relative;
             background: var(--input-bg);
-            border: 1px solid rgba(128,128,128,0.2);
-            transition: 0.3s;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 25px;
+            transition: 0.4s;
         }
 
-        .neural-title { 
-            font-weight: 800; 
-            font-size: 2.2rem; 
-            color: var(--glow); 
-            letter-spacing: -1.5px; 
-            text-transform: uppercase;
-        }
-        
-        .toggle-container { 
-            background: var(--input-bg); 
-            padding: 6px; 
-            border-radius: 20px; 
-            display: flex; 
-            gap: 5px; 
-            border: 1px solid rgba(128,128,128,0.1); 
+        .input-container:focus-within {
+            border-color: var(--glow);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.1);
+            transform: translateY(-2px);
         }
 
-        .t-btn { 
+        .script-input { 
+            background: transparent; border: none; color: var(--text); 
+            font-size: 1.15rem; min-height: 160px; width: 100%; outline: none; 
+            resize: none; font-weight: 500; line-height: 1.6;
+        }
+
+        /* Interactive Tools Dock */
+        .tool-dock {
+            position: absolute; bottom: 15px; right: 15px;
+            display: flex; gap: 8px;
+        }
+
+        .dock-btn {
+            width: 42px; height: 42px; border-radius: 14px;
+            border: 1px solid var(--border); background: var(--card);
+            color: var(--text); display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.3s;
+        }
+
+        .dock-btn:hover { background: var(--accent); color: white; transform: scale(1.05); }
+        .dock-btn.mic-on { background: #ef4444; border: none; animation: pulse 1.2s infinite; color: white; }
+
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+
+        /* Multi-choice Toggles */
+        .selector-box {
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            padding: 6px; border-radius: 20px;
+            display: flex; gap: 4px;
+        }
+
+        .sel-btn { 
             flex: 1; border: none; background: transparent; 
-            color: #888; padding: 12px 5px; border-radius: 15px; 
+            color: #71717a; padding: 12px; border-radius: 15px; 
             font-weight: 700; font-size: 0.85rem; transition: 0.3s;
         }
 
-        .t-btn.active { 
-            background: var(--glow); 
-            color: #000; 
-            box-shadow: 0 4px 15px rgba(0,255,136,0.2);
+        .sel-btn.active { 
+            background: var(--glow); color: #000; 
+            box-shadow: 0 8px 20px rgba(0, 255, 136, 0.25);
         }
 
-        .input-zone { 
-            margin-top: 25px; 
-            position: relative; 
-            background: var(--input-bg);
-            border-radius: 20px;
-            padding: 15px;
-            border: 1px solid rgba(128,128,128,0.1);
-        }
-        
-        .script-input { 
-            background: transparent; border: none; color: var(--text); 
-            font-size: 1.1rem; height: 130px; width: 100%; outline: none; 
-            resize: none;
-        }
-
-        /* Mic Button Animation */
-        .mic-btn {
-            position: absolute;
-            right: 15px;
-            bottom: 15px;
-            background: var(--card);
-            border: 1px solid rgba(128,128,128,0.2);
-            color: var(--glow);
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .mic-btn.recording { 
-            background: #ff4757; 
-            color: white; 
-            animation: pulse-mic 1.5s infinite; 
-            border: none;
-        }
-        @keyframes pulse-mic { 0% { box-shadow: 0 0 0 0 rgba(255,71,87,0.4); } 70% { box-shadow: 0 0 0 15px rgba(255,71,87,0); } 100% { box-shadow: 0 0 0 0 rgba(255,71,87,0); } }
-
-        /* Premium AI Loader */
-        .loader-box {
-            display: none;
-            text-align: center;
-            padding: 20px 0;
-        }
-        .ai-pulse {
-            display: flex;
-            justify-content: center;
-            gap: 6px;
-            height: 40px;
-            align-items: center;
-        }
-        .ai-pulse div {
-            width: 4px;
-            background: var(--glow);
-            border-radius: 10px;
-            animation: pulse-grow 1s ease-in-out infinite;
-        }
-        @keyframes pulse-grow { 0%, 100% { height: 10px; } 50% { height: 40px; } }
-
-        /* Waveform for Playback */
-        .waveform-visual {
-            display: none;
-            justify-content: center;
-            align-items: center;
-            gap: 4px;
-            height: 50px;
-            margin: 20px 0;
-        }
-        .wave-bar {
-            width: 3px;
-            height: 10px;
-            background: var(--glow);
-            border-radius: 4px;
-        }
-        .playing .wave-bar { animation: wave-anim 0.8s infinite ease-in-out; }
-        @keyframes wave-anim { 0%, 100% { height: 10px; } 50% { height: 45px; } }
-
-        .gen-btn { 
-            background: var(--glow); color: #000; width: 100%; 
-            padding: 20px; border-radius: 18px; font-weight: 800; 
-            border: none; font-size: 1.1rem; margin-top: 25px; transition: 0.4s;
+        /* Action Button */
+        .action-btn { 
+            background: linear-gradient(135deg, var(--glow), #00d4ff); 
+            color: #000; width: 100%; padding: 22px; border-radius: 25px; 
+            font-weight: 800; border: none; font-size: 1.1rem; margin-top: 30px; 
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             letter-spacing: 1px;
         }
 
-        .gen-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,255,136,0.3); }
-        .gen-btn:disabled { opacity: 0.6; transform: none; }
+        .action-btn:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0, 255, 136, 0.3); }
+        .action-btn:disabled { opacity: 0.6; transform: none; }
 
-        .result-area { 
-            background: var(--input-bg); border-radius: 20px; 
-            padding: 15px 25px; margin-top: 25px; display: none; 
-            align-items: center; gap: 15px; border: 1px solid var(--glow);
+        /* Result Area */
+        #output { 
+            margin-top: 30px; background: rgba(0,0,0,0.15); 
+            border-radius: 25px; padding: 20px; display: none;
+            border: 1px solid var(--glow); animation: fadeInUp 0.6s ease;
         }
 
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        audio { filter: invert(1) hue-rotate(180deg) brightness(1.2); height: 40px; }
+        body.light-mode audio { filter: none; }
+
         @media (max-width: 576px) {
-            .studio-card { padding: 25px 20px; }
-            .neural-title { font-size: 1.7rem; }
+            .studio-card { padding: 30px 20px; border-radius: 30px; }
+            .tool-dock { bottom: 10px; right: 10px; }
         }
     </style>
 </head>
 <body>
 
+<div class="ambient-bg">
+    <div class="blob" style="top: -10%; right: -5%;"></div>
+    <div class="blob" style="bottom: -10%; left: -5%; background: radial-gradient(circle, rgba(112, 0, 255, 0.08) 0%, transparent 70%);"></div>
+</div>
+
 <div class="main-wrapper">
     <div class="studio-card">
-        <div class="theme-switch" onclick="toggleTheme()" title="Switch Theme">
-            <i class="fa-solid fa-moon" id="themeIcon"></i>
+        <div class="theme-switch" onclick="toggleTheme()" title="Toggle Visual Mode">
+            <i class="fa-solid fa-moon" id="tIcon"></i>
         </div>
 
         <div class="text-center mb-5">
-            <div class="neural-title">NEURAL STUDIO</div>
-            <p class="text-muted small">Professional AI Audio Synthesis</p>
+            <h1 class="header-title">NEURAL STUDIO</h1>
+            <p class="text-muted fw-bold small">CRYSTAL CLEAR AI VOICE SYNTHESIS</p>
         </div>
 
         <div class="row g-3">
             <div class="col-md-6">
-                <div class="toggle-container" id="lGrp">
-                    <button class="t-btn active" onclick="sw(this, 'lGrp')" data-v="English">English</button>
-                    <button class="t-btn" onclick="sw(this, 'lGrp')" data-v="Hindi">Urdu / Hindi</button>
+                <div class="selector-box" id="lBox">
+                    <button class="sel-btn active" onclick="sel(this, 'lBox')" data-val="English">English</button>
+                    <button class="sel-btn" onclick="sel(this, 'lBox')" data-val="Hindi">Roman Urdu</button>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="toggle-container" id="gGrp">
-                    <button class="t-btn active" onclick="sw(this, 'gGrp')" data-v="m">Male</button>
-                    <button class="t-btn" onclick="sw(this, 'gGrp')" data-v="f">Female</button>
+                <div class="selector-box" id="gBox">
+                    <button class="sel-btn active" onclick="sel(this, 'gBox')" data-val="m"><i class="fa-solid fa-mars me-2"></i>Male</button>
+                    <button class="sel-btn" onclick="sel(this, 'gBox')" data-val="f"><i class="fa-solid fa-venus me-2"></i>Female</button>
                 </div>
             </div>
         </div>
 
-        <div class="input-zone">
-            <textarea id="txt" class="script-input" placeholder="Writings scripts..."></textarea>
-            <button class="mic-btn" id="micBtn" onclick="startVoiceInput()" title="Voice Typing">
-                <i class="fa-solid fa-microphone"></i>
-            </button>
-        </div>
-
-        <div id="loader" class="loader-box">
-            <div class="ai-pulse">
-                <div style="animation-delay: 0.1s"></div>
-                <div style="animation-delay: 0.3s"></div>
-                <div style="animation-delay: 0.5s"></div>
-                <div style="animation-delay: 0.2s"></div>
-                <div style="animation-delay: 0.4s"></div>
+        <div class="input-container">
+            <textarea id="mainTxt" class="script-input" placeholder="Writings scripts... Neural pathways ready Boss!"></textarea>
+            <div class="tool-dock">
+                <button class="dock-btn" onclick="document.getElementById('mainTxt').value = ''" title="Clear"><i class="fa-solid fa-trash-can"></i></button>
+                <button class="dock-btn" id="mic" onclick="startSpeech()" title="Speech to Text"><i class="fa-solid fa-microphone"></i></button>
             </div>
-            <small class="text-muted mt-3 d-block">Analyzing Neural Pathways...</small>
         </div>
 
-        <button id="mainBtn" class="gen-btn" onclick="generateAudio()">GENERATE CRYSTAL VOICE</button>
+        <button id="genBtn" class="action-btn" onclick="generate()">
+            <span id="btnLabel">INITIALIZE NEURAL SYNC</span>
+        </button>
 
-        <div id="waveform" class="waveform-visual">
-            <div class="wave-bar" style="animation-delay: 0.1s"></div>
-            <div class="wave-bar" style="animation-delay: 0.3s"></div>
-            <div class="wave-bar" style="animation-delay: 0.5s"></div>
-            <div class="wave-bar" style="animation-delay: 0.2s"></div>
-            <div class="wave-bar" style="animation-delay: 0.4s"></div>
-            <div class="wave-bar" style="animation-delay: 0.6s"></div>
-        </div>
-
-        <div id="resBox" class="result-area">
-            <div class="flex-grow-1">
-                <audio id="aud" controls class="w-100" style="filter: invert(0.8); height: 35px;"></audio>
+        <div id="output">
+            <div class="d-flex align-items-center gap-3">
+                <div class="flex-grow-1">
+                    <audio id="player" controls class="w-100"></audio>
+                </div>
+                <a id="download" href="#" download class="dock-btn" style="background: var(--glow); color: #000; border: none; width: 50px; height: 50px;">
+                    <i class="fa-solid fa-download fa-lg"></i>
+                </a>
             </div>
-            <a id="dl" href="#" download class="btn btn-dark btn-sm rounded-circle shadow-sm" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: var(--text); color: var(--card);">
-                <i class="fa-solid fa-download"></i>
-            </a>
         </div>
     </div>
 </div>
 
 <script>
-    // Theme Toggle Logic
+    // 1. Theme Logic
     function toggleTheme() {
         document.body.classList.toggle('light-mode');
-        const icon = document.getElementById('themeIcon');
-        if(document.body.classList.contains('light-mode')) {
-            icon.classList.replace('fa-moon', 'fa-sun');
-        } else {
-            icon.classList.replace('fa-sun', 'fa-moon');
-        }
+        const icon = document.getElementById('tIcon');
+        icon.classList.toggle('fa-moon');
+        icon.classList.toggle('fa-sun');
     }
 
-    // Voice Typing (Speech to Text)
-    function startVoiceInput() {
+    // 2. Custom Selector Logic
+    function sel(btn, containerId) {
+        document.getElementById(containerId).querySelectorAll('.sel-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    // 3. Speech-to-Text (Pro Mic)
+    function startSpeech() {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRecognition) {
-            alert("Your browser does not support Speech Recognition.");
-            return;
-        }
-
-        const recognition = new SpeechRecognition();
-        const micBtn = document.getElementById('micBtn');
-        const txt = document.getElementById('txt');
-
-        recognition.onstart = () => micBtn.classList.add('recording');
-        recognition.onend = () => micBtn.classList.remove('recording');
+        if (!SpeechRecognition) return alert("Browser not supported!");
         
-        recognition.onresult = (event) => {
-            const transcript = event.results[0][0].transcript;
-            txt.value += " " + transcript;
+        const rec = new SpeechRecognition();
+        const micBtn = document.getElementById('mic');
+        
+        rec.onstart = () => micBtn.classList.add('mic-on');
+        rec.onend = () => micBtn.classList.remove('mic-on');
+        rec.onresult = (e) => {
+            document.getElementById('mainTxt').value += e.results[0][0].transcript;
         };
-
-        recognition.start();
+        rec.start();
     }
 
-    function sw(b, p) {
-        document.getElementById(p).querySelectorAll('.t-btn').forEach(x => x.classList.remove('active'));
-        b.classList.add('active');
-    }
+    // 4. Voice Generation Logic
+    async function generate() {
+        const text = document.getElementById('mainTxt').value.trim();
+        if(!text) return alert("Boss, script toh likho!");
 
-    async function generateAudio() {
-        const text = document.getElementById('txt').value.trim();
-        const lang = document.querySelector('#lGrp .active').getAttribute('data-v');
-        const gender = document.querySelector('#gGrp .active').getAttribute('data-v');
-
-        if(!text) {
-            alert("Please type something first!");
-            return;
-        }
-
-        const btn = document.getElementById('mainBtn');
-        const loader = document.getElementById('loader');
-        const resBox = document.getElementById('resBox');
-        const waveform = document.getElementById('waveform');
+        const btn = document.getElementById('genBtn');
+        const label = document.getElementById('btnLabel');
+        const out = document.getElementById('output');
         
-        // UI Reset
+        // UI Loading State
         btn.disabled = true;
-        btn.innerText = "SYNTHESIZING...";
-        loader.style.display = 'block';
-        resBox.style.display = 'none';
-        waveform.style.display = 'none';
+        label.innerHTML = '<i class="fa-solid fa-atom fa-spin me-2"></i>SYNTHESIZING NEURAL AUDIO...';
+        out.style.display = 'none';
 
         try {
-            const response = await fetch('/api/generate', {
+            const res = await fetch('/api/generate', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({text, voice_group: lang, gender})
+                body: JSON.stringify({
+                    text,
+                    voice_group: document.querySelector('#lBox .active').getAttribute('data-val'),
+                    gender: document.querySelector('#gBox .active').getAttribute('data-val')
+                })
             });
             
-            const data = await response.json();
+            const data = await res.json();
             
             if(data.url) {
-                const aud = document.getElementById('aud');
+                out.style.display = 'block';
+                const aud = document.getElementById('player');
                 aud.src = data.url;
-                document.getElementById('dl').href = data.url;
-                
-                loader.style.display = 'none';
-                resBox.style.display = 'flex';
-                waveform.style.display = 'flex';
-                
-                // Sync waveform with audio playback
-                aud.onplay = () => waveform.classList.add('playing');
-                aud.onpause = () => waveform.classList.remove('playing');
+                document.getElementById('download').href = data.url;
                 aud.play();
             }
-        } catch(e) {
-            alert("Network Error. Please try again.");
+        } catch (err) {
+            alert("Sync Failed! Server check karein.");
         } finally {
             btn.disabled = false;
-            btn.innerText = "GENERATE CRYSTAL VOICE";
-            loader.style.display = 'none';
+            label.innerText = "GENERATE CRYSTAL VOICE";
         }
     }
 </script>
