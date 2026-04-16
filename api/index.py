@@ -4,7 +4,6 @@ from fastapi.responses import FileResponse
 import edge_tts
 import uuid
 import os
-import asyncio
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -15,11 +14,11 @@ if not os.path.exists(AUDIO_DIR):
     os.makedirs(AUDIO_DIR)
 
 # Crystal Clear Desi & English Models
-# 'hi-IN-ArunNeural' male voice ke liye bohot behtar hai Roman Urdu ke liye
 VOICE_MODELS = {
     "English": {"m": "en-US-AndrewNeural", "f": "en-US-AvaNeural"},
-    "Hindi": {"m": "hi-IN-ArunNeural", "f": "hi-IN-SwaraNeural"}
+    "Hindi": {"m": "hi-IN-MadhurNeural", "f": "hi-IN-SwaraNeural"} 
 }
+# Note: Madhur ya Arun dono ache hain, Madhur thora zyada natural hai Roman Urdu ke liye.
 
 class VoiceRequest(BaseModel):
     text: str
@@ -32,17 +31,27 @@ async def generate_voice(request: VoiceRequest):
         if not request.text.strip(): 
             return {"error": "Text is empty"}
         
-        # Language Logic fix
-        lang = "Hindi" if "Hindi" in request.voice_group or "Urdu" in request.voice_group else "English"
+        # --- FIXING LANGUAGE LOGIC ---
+        # Hum check kar rahe hain ke agar text Hindi/Urdu context mein hai
+        v_group = request.voice_group.lower()
+        if "hindi" in v_group or "urdu" in v_group:
+            lang = "Hindi"
+        else:
+            lang = "English"
         
-        # Voice selection
-        selected_voice = VOICE_MODELS[lang].get(request.gender, VOICE_MODELS[lang]["m"])
+        # --- FIXING VOICE SELECTION ---
+        # Gender 'm' or 'f' check kar rahe hain
+        gender = request.gender.lower()
+        if gender not in ["m", "f"]:
+            gender = "m" # Default male
+            
+        selected_voice = VOICE_MODELS[lang][gender]
         
-        # TUNING FOR CRYSTAL CLARITY:
-        # Roman Urdu ko clear karne ke liye thori base aur slow speed zaroori hai
+        # TUNING FOR CRYSTAL CLARITY
         if lang == "Hindi":
-            rate = "-5%"  # Thora slow taake words clear samajh aayein
-            pitch = "-2Hz" if request.gender == "m" else "+0Hz" # Male voice ko deep aur professional banane ke liye
+            # Roman Urdu ke liye thora slow aur deep pitch best rehti hai
+            rate = "-5%"
+            pitch = "-1Hz" if gender == "m" else "+0Hz"
         else:
             rate = "+0%"
             pitch = "+0Hz"
@@ -55,14 +64,13 @@ async def generate_voice(request: VoiceRequest):
         communicate = edge_tts.Communicate(request.text, selected_voice, rate=rate, pitch=pitch)
         await communicate.save(filepath)
         
-        # File check logic
         if os.path.exists(filepath):
             return {"status": "success", "url": f"/api/audio/{filename}?v={base_id}"}
         else:
             raise Exception("File generation failed")
 
     except Exception as e:
-        print(f"Error: {str(e)}")
+        print(f"Error occurred: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/audio/{file_name}")
