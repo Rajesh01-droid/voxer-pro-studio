@@ -21,7 +21,6 @@
             --border: rgba(255, 255, 255, 0.1);
         }
 
-        /* Premium Light Mode */
         body.light-mode {
             --bg: #f0f4f8;
             --card: rgba(255, 255, 255, 0.9);
@@ -42,37 +41,27 @@
             margin: 0;
         }
 
-        /* Animated Ambient Background */
         .ambient-bg {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
-            overflow: hidden;
         }
 
         .blob {
             position: absolute;
-            width: 500px;
-            height: 500px;
+            width: 500px; height: 500px;
             background: radial-gradient(circle, rgba(0, 255, 136, 0.12) 0%, transparent 70%);
             filter: blur(80px);
             animation: move 25s infinite alternate;
         }
 
-        @keyframes move { 
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(100px, 200px); } 
-        }
+        @keyframes move { 0% { transform: translate(0, 0); } 100% { transform: translate(100px, 200px); } }
 
         .main-wrapper { 
             min-height: 100vh; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            padding: 20px;
+            display: flex; align-items: center; justify-content: center; padding: 20px;
         }
 
-        /* Pro Glass Card */
         .studio-card { 
             background: var(--card); 
             backdrop-filter: blur(25px);
@@ -80,72 +69,26 @@
             border: 1px solid var(--border); 
             border-radius: 40px; 
             padding: clamp(20px, 5vw, 45px); 
-            width: 100%; 
-            max-width: 800px; 
+            width: 100%; max-width: 800px; 
             box-shadow: 0 50px 100px rgba(0,0,0,0.4);
             position: relative;
         }
 
-        /* Theme Switcher */
         .theme-switch {
             position: absolute; top: 30px; right: 30px;
             cursor: pointer; width: 48px; height: 48px;
             display: flex; align-items: center; justify-content: center;
             border-radius: 50%; background: var(--input-bg);
-            border: 1px solid var(--border); transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--border); transition: 0.3s;
         }
-
-        .theme-switch:hover { transform: scale(1.1) rotate(15deg); background: var(--glow); color: #000; }
 
         .header-title { 
             font-weight: 800; font-size: clamp(1.8rem, 5vw, 2.8rem); 
             background: linear-gradient(90deg, var(--glow), var(--accent));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            letter-spacing: -2px; margin-bottom: 5px;
+            letter-spacing: -2px;
         }
 
-        /* Advanced Input Layer */
-        .input-container {
-            margin-top: 30px;
-            position: relative;
-            background: var(--input-bg);
-            border: 1px solid var(--border);
-            border-radius: 30px;
-            padding: 25px;
-            transition: 0.4s;
-        }
-
-        .input-container:focus-within {
-            border-color: var(--glow);
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .script-input { 
-            background: transparent; border: none; color: var(--text); 
-            font-size: 1.15rem; min-height: 160px; width: 100%; outline: none; 
-            resize: none; font-weight: 500; line-height: 1.6;
-        }
-
-        /* Interactive Tools Dock */
-        .tool-dock {
-            position: absolute; bottom: 15px; right: 15px;
-            display: flex; gap: 8px;
-        }
-
-        .dock-btn {
-            width: 42px; height: 42px; border-radius: 14px;
-            border: 1px solid var(--border); background: var(--card);
-            color: var(--text); display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.3s;
-        }
-
-        .dock-btn:hover { background: var(--accent); color: white; transform: scale(1.05); }
-        .dock-btn.mic-on { background: #ef4444; border: none; animation: pulse 1.2s infinite; color: white; }
-
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
-
-        /* Multi-choice Toggles */
         .selector-box {
             background: var(--input-bg);
             border: 1px solid var(--border);
@@ -159,39 +102,112 @@
             font-weight: 700; font-size: 0.85rem; transition: 0.3s;
         }
 
-        .sel-btn.active { 
-            background: var(--glow); color: #000; 
-            box-shadow: 0 8px 20px rgba(0, 255, 136, 0.25);
+        .sel-btn.active { background: var(--glow); color: #000; box-shadow: 0 8px 20px rgba(0, 255, 136, 0.25); }
+
+        .input-container {
+            margin-top: 30px; position: relative; background: var(--input-bg);
+            border: 1px solid var(--border); border-radius: 30px; padding: 25px;
         }
 
-        /* Action Button */
+        .script-input { 
+            background: transparent; border: none; color: var(--text); 
+            font-size: 1.15rem; min-height: 160px; width: 100%; outline: none; 
+            resize: none;
+        }
+
+        /* --- ADVANCED AI BUTTON DESIGN --- */
+        .action-btn-container {
+            margin-top: 35px;
+            position: relative;
+            width: 100%;
+        }
+
         .action-btn { 
-            background: linear-gradient(135deg, var(--glow), #00d4ff); 
-            color: #000; width: 100%; padding: 22px; border-radius: 25px; 
-            font-weight: 800; border: none; font-size: 1.1rem; margin-top: 30px; 
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            letter-spacing: 1px;
+            position: relative;
+            background: #111;
+            color: var(--glow); 
+            width: 100%; 
+            padding: 24px; 
+            border-radius: 25px; 
+            font-weight: 800; 
+            border: 1px solid var(--glow); 
+            font-size: 1.2rem; 
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            letter-spacing: 2px;
+            overflow: hidden;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            text-transform: uppercase;
         }
 
-        .action-btn:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0, 255, 136, 0.3); }
-        .action-btn:disabled { opacity: 0.6; transform: none; }
-
-        /* Result Area */
-        #output { 
-            margin-top: 30px; background: rgba(0,0,0,0.15); 
-            border-radius: 25px; padding: 20px; display: none;
-            border: 1px solid var(--glow); animation: fadeInUp 0.6s ease;
+        /* Neon Glow Effect */
+        .action-btn:hover {
+            color: #000;
+            background: var(--glow);
+            box-shadow: 0 0 40px rgba(0, 255, 136, 0.5);
+            transform: translateY(-5px);
         }
 
+        /* Internal Liquid Wave (Hidden initially) */
+        .wave-layer {
+            position: absolute;
+            top: 100%; left: 0;
+            width: 100%; height: 100%;
+            background: var(--glow);
+            transition: 0.5s ease-in-out;
+            z-index: -1;
+        }
+
+        /* Loading Animation */
+        .btn-loading .wave-layer {
+            top: 0;
+        }
+
+        .btn-loading {
+            background: #111 !important;
+            color: var(--glow) !important;
+            pointer-events: none;
+            border-color: var(--accent);
+        }
+
+        /* Neural Particles animation during loading */
+        .particles {
+            position: absolute;
+            width: 100%; height: 100%;
+            top: 0; left: 0;
+            pointer-events: none;
+            display: none;
+        }
+
+        .btn-loading .particles { display: block; }
+
+        .particle {
+            position: absolute;
+            background: var(--glow);
+            border-radius: 50%;
+            animation: fly 1s infinite linear;
+        }
+
+        @keyframes fly {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-50px) scale(0); opacity: 0; }
+        }
+
+        /* --- END BUTTON DESIGN --- */
+
+        .tool-dock { position: absolute; bottom: 15px; right: 15px; display: flex; gap: 8px; }
+        .dock-btn { width: 42px; height: 42px; border-radius: 14px; border: 1px solid var(--border); background: var(--card); color: var(--text); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+        .dock-btn:hover { background: var(--accent); color: white; }
+        .dock-btn.mic-on { background: #ef4444; border: none; animation: pulse 1.2s infinite; color: white; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+
+        #output { margin-top: 30px; background: rgba(0,0,0,0.15); border-radius: 25px; padding: 20px; display: none; border: 1px solid var(--glow); animation: fadeInUp 0.6s ease; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
         audio { filter: invert(1) hue-rotate(180deg) brightness(1.2); height: 40px; }
         body.light-mode audio { filter: none; }
-
-        @media (max-width: 576px) {
-            .studio-card { padding: 30px 20px; border-radius: 30px; }
-            .tool-dock { bottom: 10px; right: 10px; }
-        }
     </style>
 </head>
 <body>
@@ -203,7 +219,7 @@
 
 <div class="main-wrapper">
     <div class="studio-card">
-        <div class="theme-switch" onclick="toggleTheme()" title="Toggle Visual Mode">
+        <div class="theme-switch" onclick="toggleTheme()">
             <i class="fa-solid fa-moon" id="tIcon"></i>
         </div>
 
@@ -216,7 +232,7 @@
             <div class="col-md-6">
                 <div class="selector-box" id="lBox">
                     <button class="sel-btn active" onclick="sel(this, 'lBox')" data-val="English">English</button>
-                    <button class="sel-btn" onclick="sel(this, 'lBox')" data-val="Hindi">Hindhi/Urdu</button>
+                    <button class="sel-btn" onclick="sel(this, 'lBox')" data-val="Hindi">Roman Urdu</button>
                 </div>
             </div>
             <div class="col-md-6">
@@ -235,9 +251,14 @@
             </div>
         </div>
 
-        <button id="genBtn" class="action-btn" onclick="generate()">
-            <span id="btnLabel">INITIALIZE NEURAL SYNC</span>
-        </button>
+        <div class="action-btn-container">
+            <button id="genBtn" class="action-btn" onclick="generate()">
+                <div class="wave-layer"></div>
+                <div class="particles" id="particleBox"></div>
+                <i class="fa-solid fa-brain-circuit" id="btnIcon"></i>
+                <span id="btnLabel">INITIALIZE NEURAL SYNC</span>
+            </button>
+        </div>
 
         <div id="output">
             <div class="d-flex align-items-center gap-3">
@@ -253,7 +274,6 @@
 </div>
 
 <script>
-    // 1. Theme Logic
     function toggleTheme() {
         document.body.classList.toggle('light-mode');
         const icon = document.getElementById('tIcon');
@@ -261,41 +281,53 @@
         icon.classList.toggle('fa-sun');
     }
 
-    // 2. Custom Selector Logic
     function sel(btn, containerId) {
         document.getElementById(containerId).querySelectorAll('.sel-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
     }
 
-    // 3. Speech-to-Text (Pro Mic)
     function startSpeech() {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SpeechRecognition) return alert("Browser not supported!");
-        
         const rec = new SpeechRecognition();
         const micBtn = document.getElementById('mic');
-        
         rec.onstart = () => micBtn.classList.add('mic-on');
         rec.onend = () => micBtn.classList.remove('mic-on');
-        rec.onresult = (e) => {
-            document.getElementById('mainTxt').value += e.results[0][0].transcript;
-        };
+        rec.onresult = (e) => { document.getElementById('mainTxt').value += e.results[0][0].transcript; };
         rec.start();
     }
 
-    // 4. Voice Generation Logic
+    // Particle Generator for Button
+    function createParticles() {
+        const box = document.getElementById('particleBox');
+        for(let i=0; i<10; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.width = Math.random() * 4 + 2 + 'px';
+            p.style.height = p.style.width;
+            p.style.animationDelay = Math.random() * 1 + 's';
+            box.appendChild(p);
+            setTimeout(() => p.remove(), 1000);
+        }
+    }
+
     async function generate() {
         const text = document.getElementById('mainTxt').value.trim();
         if(!text) return alert("Boss, script toh likho!");
 
         const btn = document.getElementById('genBtn');
         const label = document.getElementById('btnLabel');
+        const icon = document.getElementById('btnIcon');
         const out = document.getElementById('output');
         
-        // UI Loading State
-        btn.disabled = true;
-        label.innerHTML = '<i class="fa-solid fa-atom fa-spin me-2"></i>SYNTHESIZING NEURAL AUDIO...';
+        // UI LOADING STATE
+        btn.classList.add('btn-loading');
+        icon.className = 'fa-solid fa-atom fa-spin';
+        label.innerText = 'NEURAL PROCESSING...';
         out.style.display = 'none';
+        
+        const pInterval = setInterval(createParticles, 200);
 
         try {
             const res = await fetch('/api/generate', {
@@ -307,9 +339,7 @@
                     gender: document.querySelector('#gBox .active').getAttribute('data-val')
                 })
             });
-            
             const data = await res.json();
-            
             if(data.url) {
                 out.style.display = 'block';
                 const aud = document.getElementById('player');
@@ -318,10 +348,12 @@
                 aud.play();
             }
         } catch (err) {
-            alert("Sync Failed! Server check karein.");
+            alert("Sync Failed!");
         } finally {
-            btn.disabled = false;
-            label.innerText = "GENERATE CRYSTAL VOICE";
+            clearInterval(pInterval);
+            btn.classList.remove('btn-loading');
+            icon.className = 'fa-solid fa-brain-circuit';
+            label.innerText = "INITIALIZE NEURAL SYNC";
         }
     }
 </script>
