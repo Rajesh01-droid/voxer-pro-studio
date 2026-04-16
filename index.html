@@ -14,13 +14,16 @@
             --bg: #08090a; 
             --card: #111216; 
             --text: #ffffff;
+            --input-bg: rgba(255,255,255,0.03);
         }
 
+        /* Light Mode Variables */
         body.light-mode {
-            --bg: #f0f2f5;
+            --bg: #f4f7f6;
             --card: #ffffff;
-            --text: #08090a;
-            --glow: #00a35c;
+            --text: #1a1a1a;
+            --glow: #00bd65;
+            --input-bg: #f9f9f9;
         }
         
         html, body { 
@@ -28,7 +31,8 @@
             background: var(--bg); 
             color: var(--text); 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            transition: 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin: 0; padding: 0;
         }
 
         .main-wrapper { 
@@ -37,131 +41,164 @@
             align-items: center; 
             justify-content: center; 
             padding: 15px; 
-            background: radial-gradient(circle at top right, rgba(0,255,136,0.05), transparent);
+            background: radial-gradient(circle at top right, rgba(0,255,136,0.08), transparent);
         }
 
         .studio-card { 
             background: var(--card); 
-            border: 1px solid rgba(255,255,255,0.1); 
-            border-radius: 30px; 
-            padding: 30px; 
+            border: 1px solid rgba(128,128,128,0.1); 
+            border-radius: 35px; 
+            padding: 35px; 
             width: 100%; 
-            max-width: 750px; 
+            max-width: 700px; 
             position: relative;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.4);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.3);
         }
 
-        /* Dark/Light Toggle */
-        .theme-toggle {
+        /* Premium Theme Toggle */
+        .theme-switch {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 25px;
+            right: 25px;
             cursor: pointer;
-            font-size: 1.2rem;
-            opacity: 0.7;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--input-bg);
+            border: 1px solid rgba(128,128,128,0.2);
+            transition: 0.3s;
         }
 
         .neural-title { 
             font-weight: 800; 
-            font-size: clamp(1.5rem, 5vw, 2.2rem); 
+            font-size: 2.2rem; 
             color: var(--glow); 
             letter-spacing: -1.5px; 
+            text-transform: uppercase;
         }
         
         .toggle-container { 
-            background: rgba(0,0,0,0.2); 
-            padding: 5px; 
-            border-radius: 18px; 
+            background: var(--input-bg); 
+            padding: 6px; 
+            border-radius: 20px; 
             display: flex; 
             gap: 5px; 
-            border: 1px solid rgba(255,255,255,0.1); 
+            border: 1px solid rgba(128,128,128,0.1); 
         }
 
         .t-btn { 
             flex: 1; border: none; background: transparent; 
-            color: #666; padding: 10px 5px; border-radius: 12px; 
-            font-weight: 700; font-size: 0.8rem; transition: 0.3s;
+            color: #888; padding: 12px 5px; border-radius: 15px; 
+            font-weight: 700; font-size: 0.85rem; transition: 0.3s;
         }
 
-        .t-btn.active { background: var(--glow); color: #000; }
+        .t-btn.active { 
+            background: var(--glow); 
+            color: #000; 
+            box-shadow: 0 4px 15px rgba(0,255,136,0.2);
+        }
 
-        .input-zone { margin-top: 25px; position: relative; }
+        .input-zone { 
+            margin-top: 25px; 
+            position: relative; 
+            background: var(--input-bg);
+            border-radius: 20px;
+            padding: 15px;
+            border: 1px solid rgba(128,128,128,0.1);
+        }
         
         .script-input { 
             background: transparent; border: none; color: var(--text); 
-            font-size: 1.1rem; height: 120px; width: 100%; outline: none; 
-            resize: none; border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 1.1rem; height: 130px; width: 100%; outline: none; 
+            resize: none;
         }
 
-        /* Mic Button */
+        /* Mic Button Animation */
         .mic-btn {
             position: absolute;
-            right: 10px;
+            right: 15px;
             bottom: 15px;
-            background: transparent;
-            border: none;
+            background: var(--card);
+            border: 1px solid rgba(128,128,128,0.2);
             color: var(--glow);
-            font-size: 1.2rem;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
             cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .mic-btn.recording { color: #ff4444; animation: pulse 1.5s infinite; }
+        .mic-btn.recording { 
+            background: #ff4757; 
+            color: white; 
+            animation: pulse-mic 1.5s infinite; 
+            border: none;
+        }
+        @keyframes pulse-mic { 0% { box-shadow: 0 0 0 0 rgba(255,71,87,0.4); } 70% { box-shadow: 0 0 0 15px rgba(255,71,87,0); } 100% { box-shadow: 0 0 0 0 rgba(255,71,87,0); } }
 
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
-
-        /* Premium Loader */
-        #loader {
+        /* Premium AI Loader */
+        .loader-box {
             display: none;
             text-align: center;
-            margin: 20px 0;
+            padding: 20px 0;
         }
-        .ai-bars {
+        .ai-pulse {
             display: flex;
             justify-content: center;
-            gap: 4px;
-            height: 30px;
-        }
-        .bar {
-            width: 4px;
-            height: 100%;
-            background: var(--glow);
-            animation: barGrow 1s ease-in-out infinite;
-        }
-        @keyframes barGrow {
-            0%, 100% { transform: scaleY(0.3); }
-            50% { transform: scaleY(1); }
-        }
-
-        /* Waveform Animation */
-        .waveform {
-            display: none;
-            align-items: center;
-            gap: 3px;
+            gap: 6px;
             height: 40px;
-            margin-top: 15px;
+            align-items: center;
+        }
+        .ai-pulse div {
+            width: 4px;
+            background: var(--glow);
+            border-radius: 10px;
+            animation: pulse-grow 1s ease-in-out infinite;
+        }
+        @keyframes pulse-grow { 0%, 100% { height: 10px; } 50% { height: 40px; } }
+
+        /* Waveform for Playback */
+        .waveform-visual {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            height: 50px;
+            margin: 20px 0;
         }
         .wave-bar {
-            flex: 1;
+            width: 3px;
+            height: 10px;
             background: var(--glow);
-            height: 5px;
-            border-radius: 10px;
-            animation: wave 1.2s infinite ease-in-out;
+            border-radius: 4px;
         }
-
-        @keyframes wave {
-            0%, 100% { height: 5px; }
-            50% { height: 35px; }
-        }
+        .playing .wave-bar { animation: wave-anim 0.8s infinite ease-in-out; }
+        @keyframes wave-anim { 0%, 100% { height: 10px; } 50% { height: 45px; } }
 
         .gen-btn { 
             background: var(--glow); color: #000; width: 100%; 
-            padding: 18px; border-radius: 15px; font-weight: 800; 
-            border: none; font-size: 1rem; margin-top: 20px; transition: 0.4s;
+            padding: 20px; border-radius: 18px; font-weight: 800; 
+            border: none; font-size: 1.1rem; margin-top: 25px; transition: 0.4s;
+            letter-spacing: 1px;
         }
 
-        .result-overlay { 
-            background: rgba(255,255,255,0.05); border-radius: 15px; 
-            padding: 12px 20px; margin-top: 20px; display: none; 
-            align-items: center; gap: 12px; border: 1px solid var(--glow);
+        .gen-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,255,136,0.3); }
+        .gen-btn:disabled { opacity: 0.6; transform: none; }
+
+        .result-area { 
+            background: var(--input-bg); border-radius: 20px; 
+            padding: 15px 25px; margin-top: 25px; display: none; 
+            align-items: center; gap: 15px; border: 1px solid var(--glow);
+        }
+
+        @media (max-width: 576px) {
+            .studio-card { padding: 25px 20px; }
+            .neural-title { font-size: 1.7rem; }
         }
     </style>
 </head>
@@ -169,23 +206,23 @@
 
 <div class="main-wrapper">
     <div class="studio-card">
-        <div class="theme-toggle" onclick="toggleTheme()">
+        <div class="theme-switch" onclick="toggleTheme()" title="Switch Theme">
             <i class="fa-solid fa-moon" id="themeIcon"></i>
         </div>
 
-        <div class="text-center mb-4">
+        <div class="text-center mb-5">
             <div class="neural-title">NEURAL STUDIO</div>
-            <p class="text-muted small">AI-Powered Crystal Voice Engine</p>
+            <p class="text-muted small">Professional AI Audio Synthesis</p>
         </div>
 
-        <div class="row g-2 mb-3">
-            <div class="col-6">
+        <div class="row g-3">
+            <div class="col-md-6">
                 <div class="toggle-container" id="lGrp">
                     <button class="t-btn active" onclick="sw(this, 'lGrp')" data-v="English">English</button>
                     <button class="t-btn" onclick="sw(this, 'lGrp')" data-v="Hindi">Urdu / Hindi</button>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-md-6">
                 <div class="toggle-container" id="gGrp">
                     <button class="t-btn active" onclick="sw(this, 'gGrp')" data-v="m">Male</button>
                     <button class="t-btn" onclick="sw(this, 'gGrp')" data-v="f">Female</button>
@@ -194,37 +231,39 @@
         </div>
 
         <div class="input-zone">
-            <textarea id="txt" class="script-input" placeholder="Generating neural pathways..."></textarea>
-            <button class="mic-btn" id="micBtn" onclick="startSpeech()"><i class="fa-solid fa-microphone"></i></button>
+            <textarea id="txt" class="script-input" placeholder="Writings scripts..."></textarea>
+            <button class="mic-btn" id="micBtn" onclick="startVoiceInput()" title="Voice Typing">
+                <i class="fa-solid fa-microphone"></i>
+            </button>
         </div>
 
-        <div id="loader">
-            <div class="ai-bars">
-                <div class="bar" style="animation-delay: 0.1s"></div>
-                <div class="bar" style="animation-delay: 0.2s"></div>
-                <div class="bar" style="animation-delay: 0.3s"></div>
-                <div class="bar" style="animation-delay: 0.4s"></div>
-                <div class="bar" style="animation-delay: 0.5s"></div>
+        <div id="loader" class="loader-box">
+            <div class="ai-pulse">
+                <div style="animation-delay: 0.1s"></div>
+                <div style="animation-delay: 0.3s"></div>
+                <div style="animation-delay: 0.5s"></div>
+                <div style="animation-delay: 0.2s"></div>
+                <div style="animation-delay: 0.4s"></div>
             </div>
-            <small class="text-muted mt-2 d-block">AI is synthesizing your voice...</small>
+            <small class="text-muted mt-3 d-block">Analyzing Neural Pathways...</small>
         </div>
 
-        <button id="mainBtn" class="gen-btn" onclick="run()">GENERATE CRYSTAL VOICE</button>
+        <button id="mainBtn" class="gen-btn" onclick="generateAudio()">GENERATE CRYSTAL VOICE</button>
 
-        <div class="waveform" id="waveBox">
-            <div class="wave-bar" style="animation-delay: 0.0s"></div>
-            <div class="wave-bar" style="animation-delay: 0.2s"></div>
-            <div class="wave-bar" style="animation-delay: 0.4s"></div>
+        <div id="waveform" class="waveform-visual">
             <div class="wave-bar" style="animation-delay: 0.1s"></div>
             <div class="wave-bar" style="animation-delay: 0.3s"></div>
             <div class="wave-bar" style="animation-delay: 0.5s"></div>
+            <div class="wave-bar" style="animation-delay: 0.2s"></div>
+            <div class="wave-bar" style="animation-delay: 0.4s"></div>
+            <div class="wave-bar" style="animation-delay: 0.6s"></div>
         </div>
 
-        <div id="resBox" class="result-overlay">
+        <div id="resBox" class="result-area">
             <div class="flex-grow-1">
-                <audio id="aud" controls class="w-100" style="filter: invert(1); height: 35px;"></audio>
+                <audio id="aud" controls class="w-100" style="filter: invert(0.8); height: 35px;"></audio>
             </div>
-            <a id="dl" href="#" download class="btn btn-light btn-sm rounded-circle shadow-sm">
+            <a id="dl" href="#" download class="btn btn-dark btn-sm rounded-circle shadow-sm" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: var(--text); color: var(--card);">
                 <i class="fa-solid fa-download"></i>
             </a>
         </div>
@@ -232,20 +271,7 @@
 </div>
 
 <script>
-    // 1. Typing Effect for Placeholder
-    const textarea = document.getElementById('txt');
-    const placeholderText = "Type your script here or use the mic...";
-    let i = 0;
-    function typeEffect() {
-        if (i < placeholderText.length) {
-            textarea.setAttribute('placeholder', placeholderText.substring(0, i + 1));
-            i++;
-            setTimeout(typeEffect, 50);
-        }
-    }
-    window.onload = typeEffect;
-
-    // 2. Dark/Light Mode
+    // Theme Toggle Logic
     function toggleTheme() {
         document.body.classList.toggle('light-mode');
         const icon = document.getElementById('themeIcon');
@@ -256,68 +282,84 @@
         }
     }
 
-    // 3. Speech to Text
-    function startSpeech() {
-        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-        recognition.lang = 'en-US';
-        const mic = document.getElementById('micBtn');
-        
-        recognition.onstart = () => mic.classList.add('recording');
-        recognition.onend = () => mic.classList.remove('recording');
+    // Voice Typing (Speech to Text)
+    function startVoiceInput() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            alert("Your browser does not support Speech Recognition.");
+            return;
+        }
+
+        const recognition = new SpeechRecognition();
+        const micBtn = document.getElementById('micBtn');
+        const txt = document.getElementById('txt');
+
+        recognition.onstart = () => micBtn.classList.add('recording');
+        recognition.onend = () => micBtn.classList.remove('recording');
         
         recognition.onresult = (event) => {
-            textarea.value = event.results[0][0].transcript;
+            const transcript = event.results[0][0].transcript;
+            txt.value += " " + transcript;
         };
+
         recognition.start();
     }
 
     function sw(b, p) {
         document.getElementById(p).querySelectorAll('.t-btn').forEach(x => x.classList.remove('active'));
         b.classList.add('active');
-        // Preview sound logic can be added here
     }
 
-    async function run() {
-        const text = textarea.value.trim();
+    async function generateAudio() {
+        const text = document.getElementById('txt').value.trim();
         const lang = document.querySelector('#lGrp .active').getAttribute('data-v');
         const gender = document.querySelector('#gGrp .active').getAttribute('data-v');
 
-        if(!text) return;
+        if(!text) {
+            alert("Please type something first!");
+            return;
+        }
 
         const btn = document.getElementById('mainBtn');
         const loader = document.getElementById('loader');
-        const wave = document.getElementById('waveBox');
+        const resBox = document.getElementById('resBox');
+        const waveform = document.getElementById('waveform');
         
-        btn.style.display = 'none';
+        // UI Reset
+        btn.disabled = true;
+        btn.innerText = "SYNTHESIZING...";
         loader.style.display = 'block';
-        document.getElementById('resBox').style.display = 'none';
-        wave.style.display = 'none';
+        resBox.style.display = 'none';
+        waveform.style.display = 'none';
 
         try {
-            const r = await fetch('/api/generate', {
+            const response = await fetch('/api/generate', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({text, voice_group: lang, gender})
             });
-            const d = await r.json();
             
-            if(d.url) {
+            const data = await response.json();
+            
+            if(data.url) {
+                const aud = document.getElementById('aud');
+                aud.src = data.url;
+                document.getElementById('dl').href = data.url;
+                
                 loader.style.display = 'none';
-                wave.style.display = 'flex';
-                document.getElementById('resBox').style.display = 'flex';
+                resBox.style.display = 'flex';
+                waveform.style.display = 'flex';
                 
-                const a = document.getElementById('aud');
-                a.src = d.url;
-                document.getElementById('dl').href = d.url;
-                
-                a.onplay = () => wave.style.display = 'flex';
-                a.onpause = () => wave.style.display = 'none';
-                a.play();
+                // Sync waveform with audio playback
+                aud.onplay = () => waveform.classList.add('playing');
+                aud.onpause = () => waveform.classList.remove('playing');
+                aud.play();
             }
         } catch(e) {
-            alert("Synthesis failed. Check connection.");
+            alert("Network Error. Please try again.");
         } finally {
-            btn.style.display = 'block';
+            btn.disabled = false;
+            btn.innerText = "GENERATE CRYSTAL VOICE";
             loader.style.display = 'none';
         }
     }
