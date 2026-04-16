@@ -115,24 +115,23 @@
             resize: none;
         }
 
-        /* --- ADVANCED AI BUTTON DESIGN --- */
+        /* --- SMART AI SCANNING BUTTON --- */
         .action-btn-container {
             margin-top: 35px;
             position: relative;
-            width: 100%;
         }
 
         .action-btn { 
             position: relative;
-            background: #111;
-            color: var(--glow); 
+            background: #0a0b0e;
+            color: #fff; 
             width: 100%; 
             padding: 24px; 
-            border-radius: 25px; 
+            border-radius: 20px; 
             font-weight: 800; 
-            border: 1px solid var(--glow); 
-            font-size: 1.2rem; 
-            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(0, 255, 136, 0.3); 
+            font-size: 1.15rem; 
+            transition: 0.4s;
             letter-spacing: 2px;
             overflow: hidden;
             z-index: 1;
@@ -140,70 +139,60 @@
             align-items: center;
             justify-content: center;
             gap: 15px;
-            text-transform: uppercase;
+            cursor: pointer;
         }
 
-        /* Neon Glow Effect */
-        .action-btn:hover {
-            color: #000;
-            background: var(--glow);
-            box-shadow: 0 0 40px rgba(0, 255, 136, 0.5);
-            transform: translateY(-5px);
-        }
-
-        /* Internal Liquid Wave (Hidden initially) */
-        .wave-layer {
+        /* Scanning Wave Layer */
+        .ai-wave {
             position: absolute;
-            top: 100%; left: 0;
-            width: 100%; height: 100%;
-            background: var(--glow);
-            transition: 0.5s ease-in-out;
-            z-index: -1;
-        }
-
-        /* Loading Animation */
-        .btn-loading .wave-layer {
             top: 0;
-        }
-
-        .btn-loading {
-            background: #111 !important;
-            color: var(--glow) !important;
-            pointer-events: none;
-            border-color: var(--accent);
-        }
-
-        /* Neural Particles animation during loading */
-        .particles {
-            position: absolute;
-            width: 100%; height: 100%;
-            top: 0; left: 0;
-            pointer-events: none;
+            left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(0, 255, 136, 0.15), transparent);
+            transform: skewX(-30deg);
+            z-index: -1;
             display: none;
         }
 
-        .btn-loading .particles { display: block; }
+        /* Active Processing State */
+        .btn-loading {
+            border-color: var(--glow) !important;
+            box-shadow: 0 0 25px rgba(0, 255, 136, 0.2);
+            color: var(--glow) !important;
+            animation: pulse-border 2s infinite ease-in-out;
+            pointer-events: none;
+        }
 
+        .btn-loading .ai-wave {
+            display: block;
+            animation: scanning 1.5s infinite linear;
+        }
+
+        @keyframes scanning {
+            0% { left: -100%; }
+            100% { left: 150%; }
+        }
+
+        @keyframes pulse-border {
+            0%, 100% { border-color: rgba(0, 255, 136, 0.3); }
+            50% { border-color: rgba(0, 255, 136, 1); box-shadow: 0 0 15px rgba(0, 255, 136, 0.3); }
+        }
+
+        /* Particles */
         .particle {
             position: absolute;
             background: var(--glow);
             border-radius: 50%;
-            animation: fly 1s infinite linear;
+            box-shadow: 0 0 10px var(--glow);
+            pointer-events: none;
         }
-
-        @keyframes fly {
-            0% { transform: translateY(0) scale(1); opacity: 1; }
-            100% { transform: translateY(-50px) scale(0); opacity: 0; }
-        }
-
-        /* --- END BUTTON DESIGN --- */
 
         .tool-dock { position: absolute; bottom: 15px; right: 15px; display: flex; gap: 8px; }
         .dock-btn { width: 42px; height: 42px; border-radius: 14px; border: 1px solid var(--border); background: var(--card); color: var(--text); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
         .dock-btn:hover { background: var(--accent); color: white; }
         .dock-btn.mic-on { background: #ef4444; border: none; animation: pulse 1.2s infinite; color: white; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
-
+        
         #output { margin-top: 30px; background: rgba(0,0,0,0.15); border-radius: 25px; padding: 20px; display: none; border: 1px solid var(--glow); animation: fadeInUp 0.6s ease; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         audio { filter: invert(1) hue-rotate(180deg) brightness(1.2); height: 40px; }
@@ -253,10 +242,10 @@
 
         <div class="action-btn-container">
             <button id="genBtn" class="action-btn" onclick="generate()">
-                <div class="wave-layer"></div>
-                <div class="particles" id="particleBox"></div>
-                <i class="fa-solid fa-brain-circuit" id="btnIcon"></i>
-                <span id="btnLabel">INITIALIZE NEURAL SYNC</span>
+                <div class="ai-wave"></div>
+                <div id="particleBox"></div>
+                <i class="fa-solid fa-microchip-ai" id="btnIcon" style="color: var(--glow);"></i>
+                <span id="btnLabel">START NEURAL PROCESS</span>
             </button>
         </div>
 
@@ -297,21 +286,6 @@
         rec.start();
     }
 
-    // Particle Generator for Button
-    function createParticles() {
-        const box = document.getElementById('particleBox');
-        for(let i=0; i<10; i++) {
-            const p = document.createElement('div');
-            p.className = 'particle';
-            p.style.left = Math.random() * 100 + '%';
-            p.style.width = Math.random() * 4 + 2 + 'px';
-            p.style.height = p.style.width;
-            p.style.animationDelay = Math.random() * 1 + 's';
-            box.appendChild(p);
-            setTimeout(() => p.remove(), 1000);
-        }
-    }
-
     async function generate() {
         const text = document.getElementById('mainTxt').value.trim();
         if(!text) return alert("Boss, script toh likho!");
@@ -321,13 +295,22 @@
         const icon = document.getElementById('btnIcon');
         const out = document.getElementById('output');
         
-        // UI LOADING STATE
         btn.classList.add('btn-loading');
-        icon.className = 'fa-solid fa-atom fa-spin';
-        label.innerText = 'NEURAL PROCESSING...';
+        label.innerText = 'PROCESSING DATA...';
+        icon.className = 'fa-solid fa-sync fa-spin';
         out.style.display = 'none';
         
-        const pInterval = setInterval(createParticles, 200);
+        const pInterval = setInterval(() => {
+            const box = document.getElementById('particleBox');
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.top = '100%';
+            p.style.width = '3px'; p.style.height = '3px';
+            box.appendChild(p);
+            p.animate([{ transform: 'translateY(0)', opacity: 1 }, { transform: 'translateY(-60px)', opacity: 0 }], { duration: 1000 });
+            setTimeout(() => p.remove(), 1000);
+        }, 150);
 
         try {
             const res = await fetch('/api/generate', {
@@ -342,18 +325,17 @@
             const data = await res.json();
             if(data.url) {
                 out.style.display = 'block';
-                const aud = document.getElementById('player');
-                aud.src = data.url;
+                document.getElementById('player').src = data.url;
                 document.getElementById('download').href = data.url;
-                aud.play();
+                document.getElementById('player').play();
             }
         } catch (err) {
-            alert("Sync Failed!");
+            alert("Error!");
         } finally {
             clearInterval(pInterval);
             btn.classList.remove('btn-loading');
-            icon.className = 'fa-solid fa-brain-circuit';
-            label.innerText = "INITIALIZE NEURAL SYNC";
+            label.innerText = 'START NEURAL PROCESS';
+            icon.className = 'fa-solid fa-microchip-ai';
         }
     }
 </script>
