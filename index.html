@@ -1,259 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NEURAL STUDIO | Next-Gen AI</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEURAL STUDIO | Next-Gen AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
+        
+        :root { --glow: #00ff88; --bg: #08090a; --card: #111216; }
+        
+        /* Responsive body setup */
+        html, body { 
+            min-height: 100%; 
+            background: var(--bg); 
+            color: #fff; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            margin: 0;
+            padding: 0;
+        }
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        .main-wrapper { 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 15px; 
+            background: radial-gradient(circle at top right, #1a1c20, #08090a);
+        }
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        .studio-card { 
+            background: var(--card); 
+            border: 1px solid #222; 
+            border-radius: 30px; 
+            padding: 30px; 
+            width: 100%; 
+            max-width: 750px; 
+            position: relative;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+        }
 
-:root{
-    --bg:#07080a;
-    --card:rgba(20,22,28,0.7);
-    --border:#2a2d35;
-    --glow:#00ff88;
-    --text:#eaeaea;
-}
+        .neural-title { 
+            font-weight: 800; 
+            font-size: clamp(1.5rem, 5vw, 2.2rem); 
+            color: var(--glow); 
+            letter-spacing: -1.5px; 
+            margin-bottom: 5px; 
+        }
+        
+        .toggle-container { 
+            background: #000; 
+            padding: 5px; 
+            border-radius: 18px; 
+            display: flex; 
+            gap: 5px; 
+            border: 1px solid #333; 
+        }
 
-/* Base */
-body{
-    margin:0;
-    font-family:'Plus Jakarta Sans', sans-serif;
-    background: radial-gradient(circle at top right,#14161c,#07080a);
-    color:var(--text);
-}
+        .t-btn { 
+            flex: 1; 
+            border: none; 
+            background: transparent; 
+            color: #666; 
+            padding: 10px 5px; 
+            border-radius: 12px; 
+            font-weight: 700; 
+            font-size: 0.8rem; 
+            transition: 0.3s;
+            white-space: nowrap;
+        }
 
-/* Wrapper */
-.main-wrapper{
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
-}
+        .t-btn.active { 
+            background: #fff; 
+            color: #000; 
+            box-shadow: 0 5px 15px rgba(255,255,255,0.1); 
+        }
 
-/* Card */
-.studio-card{
-    width:100%;
-    max-width:750px;
-    padding:30px;
-    border-radius:28px;
-    background:var(--card);
-    backdrop-filter: blur(20px);
-    border:1px solid var(--border);
-    box-shadow:0 40px 80px rgba(0,0,0,0.6);
-    position:relative;
-}
+        .input-zone { margin-top: 25px; position: relative; }
+        
+        .script-input { 
+            background: transparent; 
+            border: none; 
+            color: #fff; 
+            font-size: 1.1rem; 
+            height: 150px; 
+            width: 100%; 
+            outline: none; 
+            resize: none;
+            line-height: 1.5; 
+            border-bottom: 1px solid #333;
+        }
 
-/* Glow border */
-.studio-card::before{
-    content:'';
-    position:absolute;
-    inset:0;
-    border-radius:28px;
-    padding:1px;
-    background:linear-gradient(120deg,transparent,var(--glow),transparent);
-    -webkit-mask:
-        linear-gradient(#000 0 0) content-box,
-        linear-gradient(#000 0 0);
-    -webkit-mask-composite:xor;
-    opacity:.2;
-}
+        .gen-btn { 
+            background: var(--glow); 
+            color: #000; 
+            width: 100%; 
+            padding: 18px; 
+            border-radius: 15px; 
+            font-weight: 800; 
+            border: none; 
+            font-size: 1rem;
+            margin-top: 20px; 
+            transition: 0.4s;
+        }
 
-/* Title */
-.neural-title{
-    font-weight:800;
-    font-size:clamp(1.7rem,5vw,2.3rem);
-    color:var(--glow);
-    letter-spacing:-1px;
-}
+        .gen-btn:hover { transform: scale(1.01); box-shadow: 0 0 30px rgba(0,255,136,0.2); }
 
-/* Toggle */
-.toggle-container{
-    display:flex;
-    gap:5px;
-    padding:5px;
-    border-radius:14px;
-    background:#000;
-    border:1px solid #222;
-}
+        /* Compact Result Area - Responsive */
+        .result-overlay { 
+            background: #1a1c22; 
+            border-radius: 15px; 
+            padding: 12px 20px; 
+            margin-top: 20px; 
+            display: none; 
+            align-items: center; 
+            gap: 12px;
+            border: 1px solid var(--glow);
+            flex-wrap: wrap; /* Takay choti screen pe elements niche aa sakein */
+        }
 
-.t-btn{
-    flex:1;
-    border:none;
-    background:transparent;
-    color:#666;
-    padding:10px;
-    border-radius:10px;
-    font-weight:600;
-    transition:0.3s;
-}
-
-.t-btn.active{
-    background:#fff;
-    color:#000;
-}
-
-/* Input */
-.script-input{
-    width:100%;
-    height:140px;
-    background:transparent;
-    border:none;
-    border-bottom:1px solid var(--border);
-    color:#fff;
-    font-size:1.05rem;
-    outline:none;
-    resize:none;
-}
-
-/* Button */
-.gen-btn{
-    width:100%;
-    padding:16px;
-    border:none;
-    border-radius:14px;
-    font-weight:800;
-    background:linear-gradient(135deg,#00ff88,#00cc6a);
-    color:#000;
-    margin-top:20px;
-    transition:0.3s;
-}
-
-.gen-btn:hover{
-    transform:translateY(-2px);
-    box-shadow:0 10px 25px rgba(0,255,136,0.2);
-}
-
-/* Result */
-.result-overlay{
-    margin-top:20px;
-    padding:14px;
-    border-radius:14px;
-    display:none;
-    align-items:center;
-    gap:12px;
-    border:1px solid rgba(0,255,136,0.3);
-    background:rgba(0,0,0,0.4);
-    backdrop-filter:blur(10px);
-    flex-wrap:wrap;
-}
-
-/* Audio */
-audio{
-    filter:invert(1);
-}
-
-/* Download button */
-.dl-btn{
-    width:38px;
-    height:38px;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:#fff;
-    color:#000;
-}
-
-/* Mobile */
-@media(max-width:576px){
-    .studio-card{padding:20px;}
-    .script-input{height:120px;}
-}
-</style>
+        /* Responsive Media Queries */
+        @media (max-width: 576px) {
+            .studio-card { padding: 20px; border-radius: 25px; }
+            .t-btn { font-size: 0.75rem; padding: 8px 4px; }
+            .script-input { font-size: 1rem; height: 120px; }
+            .gen-btn { padding: 15px; font-size: 0.9rem; }
+            .result-overlay { justify-content: center; }
+        }
+    </style>
 </head>
-
 <body>
 
 <div class="main-wrapper">
-<div class="studio-card">
+    <div class="studio-card">
+        <div class="text-center mb-4">
+            <div class="neural-title">NEURAL STUDIO</div>
+            <p class="text-muted small">Crystal Clear AI Voice Machine</p>
+        </div>
 
-<div class="text-center mb-4">
-    <div class="neural-title">NEURAL STUDIO</div>
-    <p class="text-muted small">Crystal Clear AI Voice Machine</p>
-</div>
+        <div class="row g-2 g-md-3">
+            <div class="col-6">
+                <div class="toggle-container" id="lGrp">
+                    <button class="t-btn active" onclick="sw(this, 'lGrp')" data-v="English">English</button>
+                    <button class="t-btn" onclick="sw(this, 'lGrp')" data-v="Hindi">Urdu / Hindi</button>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="toggle-container" id="gGrp">
+                    <button class="t-btn active" onclick="sw(this, 'gGrp')" data-v="m">Male</button>
+                    <button class="t-btn" onclick="sw(this, 'gGrp')" data-v="f">Female</button>
+                </div>
+            </div>
+        </div>
 
-<div class="row g-2">
-    <div class="col-6">
-        <div class="toggle-container" id="lGrp">
-            <button class="t-btn active" onclick="sw(this,'lGrp')" data-v="English">English</button>
-            <button class="t-btn" onclick="sw(this,'lGrp')" data-v="Hindi">Urdu / Hindi</button>
+        <div class="input-zone">
+            <textarea id="txt" class="script-input" placeholder="Type Roman Urdu (e.g., 'Kese ho bhai?')..."></textarea>
+        </div>
+
+        <button id="mainBtn" class="gen-btn" onclick="run()">GENERATE CRYSTAL VOICE</button>
+
+        <div id="resBox" class="result-overlay">
+            <div class="flex-grow-1" style="min-width: 200px;">
+                <audio id="aud" controls class="w-100" style="filter: invert(1); height: 35px;"></audio>
+            </div>
+            <a id="dl" href="#" download class="btn btn-light btn-sm rounded-circle" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
+                <i class="fa-solid fa-download"></i>
+            </a>
         </div>
     </div>
-
-    <div class="col-6">
-        <div class="toggle-container" id="gGrp">
-            <button class="t-btn active" onclick="sw(this,'gGrp')" data-v="m">Male</button>
-            <button class="t-btn" onclick="sw(this,'gGrp')" data-v="f">Female</button>
-        </div>
-    </div>
-</div>
-
-<div class="mt-4">
-<textarea id="txt" class="script-input" placeholder="Type Roman Urdu (e.g., 'Kese ho bhai?')..."></textarea>
-</div>
-
-<button id="mainBtn" class="gen-btn" onclick="run()">GENERATE CRYSTAL VOICE</button>
-
-<div id="resBox" class="result-overlay">
-    <div class="flex-grow-1" style="min-width:200px;">
-        <audio id="aud" controls class="w-100"></audio>
-    </div>
-    <a id="dl" href="#" download class="dl-btn">
-        <i class="fa-solid fa-download"></i>
-    </a>
-</div>
-
-</div>
 </div>
 
 <script>
-function sw(b,p){
-    document.getElementById(p).querySelectorAll('.t-btn').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');
-}
-
-async function run(){
-    const text=document.getElementById('txt').value.trim();
-    const lang=document.querySelector('#lGrp .active').getAttribute('data-v');
-    const gender=document.querySelector('#gGrp .active').getAttribute('data-v');
-
-    if(!text) return;
-
-    const btn=document.getElementById('mainBtn');
-    btn.disabled=true;
-    btn.innerText="TUNING NEURAL AUDIO...";
-
-    try{
-        const r=await fetch('/api/generate',{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({text,voice_group:lang,gender})
-        });
-
-        const d=await r.json();
-
-        if(d.url){
-            document.getElementById('resBox').style.display='flex';
-            const a=document.getElementById('aud');
-            a.src=d.url;
-            document.getElementById('dl').href=d.url;
-            a.play();
-        }
-
-    }catch(e){
-        alert("Error");
-    }finally{
-        btn.disabled=false;
-        btn.innerText="GENERATE CRYSTAL VOICE";
+    function sw(b, p) {
+        document.getElementById(p).querySelectorAll('.t-btn').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
     }
-}
-</script>
 
+    async function run() {
+        const text = document.getElementById('txt').value.trim();
+        const lang = document.querySelector('#lGrp .active').getAttribute('data-v');
+        const gender = document.querySelector('#gGrp .active').getAttribute('data-v');
+
+        if(!text) return;
+
+        const btn = document.getElementById('mainBtn');
+        btn.disabled = true;
+        btn.innerText = "TUNING NEURAL AUDIO...";
+
+        try {
+            const r = await fetch('/api/generate', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({text, voice_group: lang, gender})
+            });
+            const d = await r.json();
+            if(d.url) {
+                document.getElementById('resBox').style.display = 'flex';
+                const a = document.getElementById('aud');
+                a.src = d.url;
+                document.getElementById('dl').href = d.url;
+                a.play();
+            }
+        } catch(e) {
+            alert("Error");
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "GENERATE CRYSTAL VOICE";
+        }
+    }
+</script>
 </body>
 </html>
