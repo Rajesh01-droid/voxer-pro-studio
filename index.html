@@ -6,20 +6,29 @@
     <title>NEURAL STUDIO | Next-Gen AI</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
         
-        :root { --glow: #00ff88; --bg: #08090a; --card: #111216; }
+        :root { 
+            --glow: #00ff88; 
+            --bg: #08090a; 
+            --card: #111216; 
+            --text: #ffffff;
+        }
+
+        body.light-mode {
+            --bg: #f0f2f5;
+            --card: #ffffff;
+            --text: #08090a;
+            --glow: #00a35c;
+        }
         
-        /* Responsive body setup */
         html, body { 
             min-height: 100%; 
             background: var(--bg); 
-            color: #fff; 
+            color: var(--text); 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            margin: 0;
-            padding: 0;
+            transition: 0.3s ease;
         }
 
         .main-wrapper { 
@@ -28,18 +37,28 @@
             align-items: center; 
             justify-content: center; 
             padding: 15px; 
-            background: radial-gradient(circle at top right, #1a1c20, #08090a);
+            background: radial-gradient(circle at top right, rgba(0,255,136,0.05), transparent);
         }
 
         .studio-card { 
             background: var(--card); 
-            border: 1px solid #222; 
+            border: 1px solid rgba(255,255,255,0.1); 
             border-radius: 30px; 
             padding: 30px; 
             width: 100%; 
             max-width: 750px; 
             position: relative;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.4);
+        }
+
+        /* Dark/Light Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            opacity: 0.7;
         }
 
         .neural-title { 
@@ -47,87 +66,102 @@
             font-size: clamp(1.5rem, 5vw, 2.2rem); 
             color: var(--glow); 
             letter-spacing: -1.5px; 
-            margin-bottom: 5px; 
         }
         
         .toggle-container { 
-            background: #000; 
+            background: rgba(0,0,0,0.2); 
             padding: 5px; 
             border-radius: 18px; 
             display: flex; 
             gap: 5px; 
-            border: 1px solid #333; 
+            border: 1px solid rgba(255,255,255,0.1); 
         }
 
         .t-btn { 
-            flex: 1; 
-            border: none; 
-            background: transparent; 
-            color: #666; 
-            padding: 10px 5px; 
-            border-radius: 12px; 
-            font-weight: 700; 
-            font-size: 0.8rem; 
-            transition: 0.3s;
-            white-space: nowrap;
+            flex: 1; border: none; background: transparent; 
+            color: #666; padding: 10px 5px; border-radius: 12px; 
+            font-weight: 700; font-size: 0.8rem; transition: 0.3s;
         }
 
-        .t-btn.active { 
-            background: #fff; 
-            color: #000; 
-            box-shadow: 0 5px 15px rgba(255,255,255,0.1); 
-        }
+        .t-btn.active { background: var(--glow); color: #000; }
 
         .input-zone { margin-top: 25px; position: relative; }
         
         .script-input { 
-            background: transparent; 
-            border: none; 
-            color: #fff; 
-            font-size: 1.1rem; 
-            height: 150px; 
-            width: 100%; 
-            outline: none; 
-            resize: none;
-            line-height: 1.5; 
-            border-bottom: 1px solid #333;
+            background: transparent; border: none; color: var(--text); 
+            font-size: 1.1rem; height: 120px; width: 100%; outline: none; 
+            resize: none; border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Mic Button */
+        .mic-btn {
+            position: absolute;
+            right: 10px;
+            bottom: 15px;
+            background: transparent;
+            border: none;
+            color: var(--glow);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        .mic-btn.recording { color: #ff4444; animation: pulse 1.5s infinite; }
+
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+        /* Premium Loader */
+        #loader {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .ai-bars {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            height: 30px;
+        }
+        .bar {
+            width: 4px;
+            height: 100%;
+            background: var(--glow);
+            animation: barGrow 1s ease-in-out infinite;
+        }
+        @keyframes barGrow {
+            0%, 100% { transform: scaleY(0.3); }
+            50% { transform: scaleY(1); }
+        }
+
+        /* Waveform Animation */
+        .waveform {
+            display: none;
+            align-items: center;
+            gap: 3px;
+            height: 40px;
+            margin-top: 15px;
+        }
+        .wave-bar {
+            flex: 1;
+            background: var(--glow);
+            height: 5px;
+            border-radius: 10px;
+            animation: wave 1.2s infinite ease-in-out;
+        }
+
+        @keyframes wave {
+            0%, 100% { height: 5px; }
+            50% { height: 35px; }
         }
 
         .gen-btn { 
-            background: var(--glow); 
-            color: #000; 
-            width: 100%; 
-            padding: 18px; 
-            border-radius: 15px; 
-            font-weight: 800; 
-            border: none; 
-            font-size: 1rem;
-            margin-top: 20px; 
-            transition: 0.4s;
+            background: var(--glow); color: #000; width: 100%; 
+            padding: 18px; border-radius: 15px; font-weight: 800; 
+            border: none; font-size: 1rem; margin-top: 20px; transition: 0.4s;
         }
 
-        .gen-btn:hover { transform: scale(1.01); box-shadow: 0 0 30px rgba(0,255,136,0.2); }
-
-        /* Compact Result Area - Responsive */
         .result-overlay { 
-            background: #1a1c22; 
-            border-radius: 15px; 
-            padding: 12px 20px; 
-            margin-top: 20px; 
-            display: none; 
-            align-items: center; 
-            gap: 12px;
-            border: 1px solid var(--glow);
-            flex-wrap: wrap; /* Takay choti screen pe elements niche aa sakein */
-        }
-
-        /* Responsive Media Queries */
-        @media (max-width: 576px) {
-            .studio-card { padding: 20px; border-radius: 25px; }
-            .t-btn { font-size: 0.75rem; padding: 8px 4px; }
-            .script-input { font-size: 1rem; height: 120px; }
-            .gen-btn { padding: 15px; font-size: 0.9rem; }
-            .result-overlay { justify-content: center; }
+            background: rgba(255,255,255,0.05); border-radius: 15px; 
+            padding: 12px 20px; margin-top: 20px; display: none; 
+            align-items: center; gap: 12px; border: 1px solid var(--glow);
         }
     </style>
 </head>
@@ -135,12 +169,16 @@
 
 <div class="main-wrapper">
     <div class="studio-card">
-        <div class="text-center mb-4">
-            <div class="neural-title">NEURAL STUDIO</div>
-            <p class="text-muted small">Crystal Clear AI Voice Machine</p>
+        <div class="theme-toggle" onclick="toggleTheme()">
+            <i class="fa-solid fa-moon" id="themeIcon"></i>
         </div>
 
-        <div class="row g-2 g-md-3">
+        <div class="text-center mb-4">
+            <div class="neural-title">NEURAL STUDIO</div>
+            <p class="text-muted small">AI-Powered Crystal Voice Engine</p>
+        </div>
+
+        <div class="row g-2 mb-3">
             <div class="col-6">
                 <div class="toggle-container" id="lGrp">
                     <button class="t-btn active" onclick="sw(this, 'lGrp')" data-v="English">English</button>
@@ -156,16 +194,37 @@
         </div>
 
         <div class="input-zone">
-            <textarea id="txt" class="script-input" placeholder="Type Roman Urdu (e.g., 'Kese ho bhai?')..."></textarea>
+            <textarea id="txt" class="script-input" placeholder="Generating neural pathways..."></textarea>
+            <button class="mic-btn" id="micBtn" onclick="startSpeech()"><i class="fa-solid fa-microphone"></i></button>
+        </div>
+
+        <div id="loader">
+            <div class="ai-bars">
+                <div class="bar" style="animation-delay: 0.1s"></div>
+                <div class="bar" style="animation-delay: 0.2s"></div>
+                <div class="bar" style="animation-delay: 0.3s"></div>
+                <div class="bar" style="animation-delay: 0.4s"></div>
+                <div class="bar" style="animation-delay: 0.5s"></div>
+            </div>
+            <small class="text-muted mt-2 d-block">AI is synthesizing your voice...</small>
         </div>
 
         <button id="mainBtn" class="gen-btn" onclick="run()">GENERATE CRYSTAL VOICE</button>
 
+        <div class="waveform" id="waveBox">
+            <div class="wave-bar" style="animation-delay: 0.0s"></div>
+            <div class="wave-bar" style="animation-delay: 0.2s"></div>
+            <div class="wave-bar" style="animation-delay: 0.4s"></div>
+            <div class="wave-bar" style="animation-delay: 0.1s"></div>
+            <div class="wave-bar" style="animation-delay: 0.3s"></div>
+            <div class="wave-bar" style="animation-delay: 0.5s"></div>
+        </div>
+
         <div id="resBox" class="result-overlay">
-            <div class="flex-grow-1" style="min-width: 200px;">
+            <div class="flex-grow-1">
                 <audio id="aud" controls class="w-100" style="filter: invert(1); height: 35px;"></audio>
             </div>
-            <a id="dl" href="#" download class="btn btn-light btn-sm rounded-circle" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
+            <a id="dl" href="#" download class="btn btn-light btn-sm rounded-circle shadow-sm">
                 <i class="fa-solid fa-download"></i>
             </a>
         </div>
@@ -173,21 +232,66 @@
 </div>
 
 <script>
+    // 1. Typing Effect for Placeholder
+    const textarea = document.getElementById('txt');
+    const placeholderText = "Type your script here or use the mic...";
+    let i = 0;
+    function typeEffect() {
+        if (i < placeholderText.length) {
+            textarea.setAttribute('placeholder', placeholderText.substring(0, i + 1));
+            i++;
+            setTimeout(typeEffect, 50);
+        }
+    }
+    window.onload = typeEffect;
+
+    // 2. Dark/Light Mode
+    function toggleTheme() {
+        document.body.classList.toggle('light-mode');
+        const icon = document.getElementById('themeIcon');
+        if(document.body.classList.contains('light-mode')) {
+            icon.classList.replace('fa-moon', 'fa-sun');
+        } else {
+            icon.classList.replace('fa-sun', 'fa-moon');
+        }
+    }
+
+    // 3. Speech to Text
+    function startSpeech() {
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'en-US';
+        const mic = document.getElementById('micBtn');
+        
+        recognition.onstart = () => mic.classList.add('recording');
+        recognition.onend = () => mic.classList.remove('recording');
+        
+        recognition.onresult = (event) => {
+            textarea.value = event.results[0][0].transcript;
+        };
+        recognition.start();
+    }
+
     function sw(b, p) {
         document.getElementById(p).querySelectorAll('.t-btn').forEach(x => x.classList.remove('active'));
         b.classList.add('active');
+        // Preview sound logic can be added here
     }
 
     async function run() {
-        const text = document.getElementById('txt').value.trim();
+        const text = textarea.value.trim();
         const lang = document.querySelector('#lGrp .active').getAttribute('data-v');
         const gender = document.querySelector('#gGrp .active').getAttribute('data-v');
 
         if(!text) return;
 
         const btn = document.getElementById('mainBtn');
-        btn.disabled = true;
-        btn.innerText = "TUNING NEURAL AUDIO...";
+        const loader = document.getElementById('loader');
+        const wave = document.getElementById('waveBox');
+        
+        btn.style.display = 'none';
+        loader.style.display = 'block';
+        document.getElementById('resBox').style.display = 'none';
+        wave.style.display = 'none';
 
         try {
             const r = await fetch('/api/generate', {
@@ -196,20 +300,28 @@
                 body: JSON.stringify({text, voice_group: lang, gender})
             });
             const d = await r.json();
+            
             if(d.url) {
+                loader.style.display = 'none';
+                wave.style.display = 'flex';
                 document.getElementById('resBox').style.display = 'flex';
+                
                 const a = document.getElementById('aud');
                 a.src = d.url;
                 document.getElementById('dl').href = d.url;
+                
+                a.onplay = () => wave.style.display = 'flex';
+                a.onpause = () => wave.style.display = 'none';
                 a.play();
             }
         } catch(e) {
-            alert("Error");
+            alert("Synthesis failed. Check connection.");
         } finally {
-            btn.disabled = false;
-            btn.innerText = "GENERATE CRYSTAL VOICE";
+            btn.style.display = 'block';
+            loader.style.display = 'none';
         }
     }
 </script>
+
 </body>
 </html>
